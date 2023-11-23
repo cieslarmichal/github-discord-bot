@@ -36,24 +36,35 @@ export class Application {
     discordClient.on('ready', () => {
       loggerService.debug({
         message: 'Discord client is ready.',
-        context: { userTag: discordClient.user?.tag },
+        context: { user: discordClient.user?.tag },
       });
     });
 
-    discordClient.on('guildMemberAdd', (member) => {
+    discordClient.on('guildMemberAdd', async (member) => {
       loggerService.debug({
-        message: 'New member joined the server.',
-        context: { userTag: member.user.tag },
+        message: 'New user joined the server.',
+        context: { user: member.user.username },
       });
 
-      member.send('Welcome to the server!');
+      const welcomeChannelName = 'welcome';
+
+      const welcomeChannel = member.guild.channels.cache.find((channel) => channel.name === welcomeChannelName);
+
+      if (!welcomeChannel) {
+        throw new Error('Welcome channel not found.');
+      }
+
+      if (welcomeChannel.isTextBased()) {
+        await welcomeChannel.send(`Welcome to the server ${member.user}!`);
+      }
 
       loggerService.debug({
-        message: 'Welcome message sent to the new member.',
-        context: { userTag: member.user.tag },
+        message: 'Welcome message sent.',
+        context: {
+          user: member.user.username,
+          channel: welcomeChannelName,
+        },
       });
-
-      console.log(`Sent welcome message to ${member.user.tag}`);
     });
 
     await discordClient.login(discordToken);

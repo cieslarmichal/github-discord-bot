@@ -5,11 +5,12 @@ import { type DiscordClient } from '../../clients/discordClient/discordClient.js
 export class DiscordClientFactory {
   public static create(): DiscordClient {
     const client = new Client({
-      intents:
-        GatewayIntentBits.Guilds |
-        GatewayIntentBits.GuildMembers |
-        GatewayIntentBits.MessageContent |
+      intents: [
+        GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+      ],
     });
 
     return client;
