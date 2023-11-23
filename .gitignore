@@ -1,8 +1,9 @@
 .idea
-**/node_modules
 
-**/*/.env
-**/*/.env.test
+node_modules
+
+.env
+env.test
 
 dist
 *.log
@@ -17,9 +18,3 @@ coverage
 !.vscode/extensions.json
 
 .tsbuildinfo
-
-.turbo
-
-**/*/testData/**
-
-.localstack
