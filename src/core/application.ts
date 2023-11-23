@@ -34,7 +34,10 @@ export class Application {
     const discordToken = ConfigProvider.getDiscordToken();
 
     discordClient.on('ready', () => {
-      loggerService.debug({ message: 'Discord client is ready.' });
+      loggerService.debug({
+        message: 'Discord client is ready.',
+        context: { userTag: discordClient.user?.tag },
+      });
     });
 
     discordClient.on('guildMemberAdd', (member) => {

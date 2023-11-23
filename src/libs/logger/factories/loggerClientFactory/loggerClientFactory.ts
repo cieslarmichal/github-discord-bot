@@ -1,6 +1,4 @@
-/* eslint-disable import/no-named-as-default */
-
-import { type pino } from 'pino';
+import { pino } from 'pino';
 
 import { type LoggerClient } from '../../clients/loggerClient/loggerClient.js';
 import { type LoggerConfig } from '../../types/loggerConfig.js';

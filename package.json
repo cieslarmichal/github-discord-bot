@@ -4,9 +4,8 @@
   "type": "module",
   "scripts": {
     "build:clean": "rimraf dist",
-    "start": "node --loader ts-node/esm src/index.ts",
-    "build": "tsc --build tsconfig.build.json",
-    "build:dev": "tsc --build tsconfig.json",
+    "start": "node --env-file .env --loader ts-node/esm src/index.ts",
+    "build": "tsc --build tsconfig.json",
     "lint": "eslint . --ext .ts --cache --max-warnings 0",
     "lint:fix": "npm run lint -- --fix"
   },
