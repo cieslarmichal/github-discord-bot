@@ -1,5 +1,5 @@
 import { Validator } from './validator.js';
-import { InputNotValidError } from '../errors/common/inputNotValidError.js';
+import { InputNotValidError } from '../errors/inputNotValidError.js';
 
 export class Assert {
   public static isNotEmptyString(value: unknown): asserts value is string {
