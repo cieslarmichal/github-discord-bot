@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
+import { TypeClone } from '@sinclair/typebox';
+import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
 import { ApplicationError } from '../../common/errors/applicationError.js';
 import { BaseError } from '../../common/errors/baseError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpHeader } from '../../common/types/http/httpHeader.js';
-import { type HttpRoute } from '../../common/types/http/httpRoute.js';
+import { type HttpRouteSchema, type HttpRoute } from '../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
@@ -55,7 +56,7 @@ export class HttpRouter {
     const { routes, basePath } = payload;
 
     routes.map((httpRoute) => {
-      const { method, path: controllerPath } = httpRoute;
+      const { method, path: controllerPath, tags, description } = httpRoute;
 
       const path = this.normalizePath({ path: `/${this.rootPath}/${basePath}/${controllerPath}` });
 
@@ -185,11 +186,11 @@ export class HttpRouter {
         method,
         url: path,
         handler,
-        // schema: {
-        //   description,
-        //   tags,
-        //   ...this.mapToFastifySchema(httpRoute.schema),
-        // },
+        schema: {
+          description,
+          tags,
+          ...this.mapToFastifySchema(httpRoute.schema),
+        },
       });
 
       this.loggerService.info({
@@ -203,34 +204,34 @@ export class HttpRouter {
     });
   }
 
-  // private mapToFastifySchema(routeSchema: HttpRouteSchema): FastifySchema {
-  //   const { pathParams, queryParams, body } = routeSchema.request;
+  private mapToFastifySchema(routeSchema: HttpRouteSchema): FastifySchema {
+    const { pathParams, queryParams, body } = routeSchema.request;
 
-  //   const fastifySchema: FastifySchema = {};
+    const fastifySchema: FastifySchema = {};
 
-  //   if (pathParams) {
-  //     fastifySchema.params = pathParams;
-  //   }
+    if (pathParams) {
+      fastifySchema.params = pathParams;
+    }
 
-  //   if (queryParams) {
-  //     fastifySchema.querystring = queryParams;
-  //   }
+    if (queryParams) {
+      fastifySchema.querystring = queryParams;
+    }
 
-  //   if (body) {
-  //     fastifySchema.body = body;
-  //   }
+    if (body) {
+      fastifySchema.body = body;
+    }
 
-  //   fastifySchema.response = Object.entries(routeSchema.response).reduce((agg, [statusCode, statusCodeSchema]) => {
-  //     const { schema, description } = statusCodeSchema;
+    fastifySchema.response = Object.entries(routeSchema.response).reduce((agg, [statusCode, statusCodeSchema]) => {
+      const { schema, description } = statusCodeSchema;
 
-  //     return {
-  //       ...agg,
-  //       [statusCode]: TypeClone.Type(schema, { description }),
-  //     };
-  //   }, {});
+      return {
+        ...agg,
+        [statusCode]: TypeClone.Type(schema, { description }),
+      };
+    }, {});
 
-  //   return fastifySchema;
-  // }
+    return fastifySchema;
+  }
 
   private normalizePath(payload: NormalizePathPayload): string {
     const { path } = payload;

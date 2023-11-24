@@ -42,22 +42,16 @@ export class IssueHttpController implements HttpController {
   private async processGithubIssueEvent(
     request: HttpRequest<ProcessGithubIssueEventBody>,
   ): Promise<HttpOkResponse<ProcessGithubIssueEventResponseOkBody>> {
-    const { action, issue, user } = request.body;
-
-    console.log({
-      action,
-      issue,
-      user,
-    });
+    const { action, issue, sender } = request.body;
 
     if (action === 'opened') {
       await this.sendIssueCreatedMessageCommandHandler.execute({
         issueTitle: issue.title,
         issueUrl: issue.url,
         issueNumber: issue.number,
-        creatorName: user.login,
-        creatorAvatarUrl: user.avatar_url,
-        creatorHtmlUrl: user.html_url,
+        creatorName: sender.login,
+        creatorAvatarUrl: sender.avatar_url,
+        creatorHtmlUrl: sender.html_url,
       });
     }
 
