@@ -23,11 +23,11 @@ export class ConfigProvider {
   }
 
   public getServerHost(): string {
-    return EnvParser.parseString({ name: 'SERVER_HOST' }) || '0.0.0.0';
+    return EnvParser.parseString({ name: 'HOST' }) || '0.0.0.0';
   }
 
   public getServerPort(): number {
-    const envVariable = 'SERVER_PORT';
+    const envVariable = 'PORT';
 
     const serverPort = EnvParser.parseNumber({ name: envVariable });
 
