@@ -26,11 +26,11 @@ export class ConfigProvider {
     return this.getStringEnvVariable('DISCORD_TOKEN');
   }
 
-  public getDiscordWelcomeChannel(): string {
-    return this.getStringEnvVariable('DISCORD_WELCOME_CHANNEL');
+  public getDiscordWelcomeChannelId(): string {
+    return this.getStringEnvVariable('DISCORD_WELCOME_CHANNEL_ID');
   }
 
-  public getDiscordIssuesChannel(): string {
-    return this.getStringEnvVariable('DISCORD_ISSUES_CHANNEL');
+  public getDiscordIssuesChannelId(): string {
+    return this.getStringEnvVariable('DISCORD_ISSUES_CHANNEL_ID');
   }
 }

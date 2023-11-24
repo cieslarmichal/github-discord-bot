@@ -5,6 +5,8 @@ import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection
 import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type DiscordClient } from '../libs/discord/clients/discordClient/discordClient.js';
 import { DiscordClientFactory } from '../libs/discord/factories/discordClientFactory/discordClientFactory.js';
+import { type DiscordService } from '../libs/discord/services/discordService/discordService.js';
+import { DiscordServiceImpl } from '../libs/discord/services/discordService/discordServiceImpl.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
 import { IssueModule } from '../modules/issueModule/issueModule.js';
@@ -26,6 +28,11 @@ export class Application {
     );
 
     container.bind<DiscordClient>(symbols.discordClient, () => DiscordClientFactory.create());
+
+    container.bind<DiscordService>(
+      symbols.discordService,
+      () => new DiscordServiceImpl(container.get<DiscordClient>(symbols.discordClient)),
+    );
 
     container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
 

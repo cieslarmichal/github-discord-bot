@@ -1,42 +1,22 @@
-import { beforeEach, afterEach, expect, it, describe } from 'vitest';
+import { expect, it, describe, vi } from 'vitest';
 
 import { type SendIssueCreatedMessageCommandHandler } from './sendIssueCreatedMessageCommandHandler.js';
-import { ResourceAlreadyExistsError } from '../../../../../common/errors/common/resourceAlreadyExistsError.js';
-import { Application } from '../../../../../core/application.js';
-import { type PostgresDatabaseClient } from '../../../../../core/database/postgresDatabaseClient/postgresDatabaseClient.js';
-import { coreSymbols } from '../../../../../core/symbols.js';
-import { symbols } from '../../../symbols.js';
-import { IssueTestFactory } from '../../../tests/factories/issueTestFactory/issueTestFactory.js';
-import { IssueTestUtils } from '../../../tests/utils/issueTestUtils/issueTestUtils.js';
+import { SpyFactory } from '../../../../../common/tests/spyFactory.js';
 
 describe('SendIssueCreatedMessageCommandHandler', () => {
-  let sendIssueCreatedMessageCommandHandler: SendIssueCreatedMessageCommandHandler;
+  const spyFactory = new SpyFactory(vi);
 
-  let postgresDatabaseClient: PostgresDatabaseClient;
+  let sendIssueCreatedMessageCommandHandler: SendIssueCreatedMessageCommandHandler;
 
   let issueTestUtils: IssueTestUtils;
 
   const issueTestFactory = new IssueTestFactory();
 
-  beforeEach(async () => {
-    const container = Application.createContainer();
-
-    sendIssueCreatedMessageCommandHandler = container.get<SendIssueCreatedMessageCommandHandler>(symbols.sendIssueCreatedMessageCommandHandler);
-
-    postgresDatabaseClient = container.get<PostgresDatabaseClient>(coreSymbols.postgresDatabaseClient);
-
-    issueTestUtils = new IssueTestUtils(postgresDatabaseClient);
-
-    await issueTestUtils.truncate();
-  });
-
-  afterEach(async () => {
-    await issueTestUtils.truncate();
-
-    await postgresDatabaseClient.destroy();
-  });
-
   it('creates a issue', async () => {
+    spyFactory.create({}, 'create').mockImplementation(async () => {
+      return unitOfWork;
+    });
+
     const { title, releaseYear, authorId } = issueTestFactory.create();
 
     const { issue } = await sendIssueCreatedMessageCommandHandler.execute({

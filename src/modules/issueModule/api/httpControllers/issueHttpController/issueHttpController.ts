@@ -43,11 +43,15 @@ export class IssueHttpController implements HttpController {
   private async processGithubIssueEvent(
     request: HttpRequest<ProcessGithubIssueEventBody>,
   ): Promise<HttpOkResponse<ProcessGithubIssueEventResponseOkBody> | HttpBadRequestResponse<ResponseErrorBody>> {
-    const { action, issue } = request.body;
+    const { action, issue, user } = request.body;
 
     await this.sendIssueCreatedMessageCommandHandler.execute({
       issueTitle: issue.title,
       issueUrl: issue.url,
+      issueNumber: issue.number,
+      creatorLogin: user.login,
+      creatorAvatarUrl: user.avatar_url,
+      creatorHtmlUrl: user.html_url,
     });
 
     return {

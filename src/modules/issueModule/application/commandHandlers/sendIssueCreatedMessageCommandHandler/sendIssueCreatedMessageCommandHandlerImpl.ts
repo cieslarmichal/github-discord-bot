@@ -2,55 +2,60 @@ import {
   type SendIssueCreatedMessageCommandHandler,
   type SendIssueCreatedMessageCommandHandlerPayload,
 } from './sendIssueCreatedMessageCommandHandler.js';
+import { type DiscordService } from '../../../../../libs/discord/services/discordService/discordService.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
+import { type IssueModuleConfigProvider } from '../../../issueModuleConfigProvider.js';
 
 export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreatedMessageCommandHandler {
   public constructor(
     private readonly discordService: DiscordService,
     private readonly loggerService: LoggerService,
+    private readonly issueModuleConfigProvider: IssueModuleConfigProvider,
   ) {}
 
   public async execute(payload: SendIssueCreatedMessageCommandHandlerPayload): Promise<void> {
-    const { issueTitle, issueUrl } = payload;
+    const { issueTitle, issueUrl, issueNumber, creatorName, creatorAvatarUrl, creatorHtmlUrl } = payload;
+
+    const issuesChannelId = this.issueModuleConfigProvider.getDiscordIssuesChannelId();
 
     this.loggerService.debug({
-      message: 'Sending issue created message...',
+      message: 'Sending message about created issue...',
       context: {
         issueTitle,
         issueUrl,
+        issuesChannelId,
+        issueNumber,
+        creatorName,
+        creatorAvatarUrl,
+        creatorHtmlUrl,
       },
     });
 
-    const existingIssue = await this.issueRepository.findIssue({
-      title,
-      authorId,
-    });
-
-    if (existingIssue) {
-      throw new ResourceAlreadyExistsError({
-        name: 'Issue',
-        id: existingIssue.id,
-        title,
-        authorId,
-      });
-    }
-
-    const issue = await this.issueRepository.createIssue({
-      title,
-      releaseYear,
-      authorId,
+    await this.discordService.sendEmbedMessage({
+      message: {
+        color: '#00CD2D',
+        title: `${issueNumber}: ${issueTitle}`,
+        url: issueUrl,
+        author: {
+          name: creatorName,
+          url: creatorHtmlUrl,
+        },
+        thumbnail: creatorAvatarUrl,
+      },
+      channelId: issuesChannelId,
     });
 
     this.loggerService.info({
-      message: 'Issue created.',
+      message: 'Message about created issue sent.',
       context: {
-        issueId: issue.id,
-        title,
-        releaseYear,
-        authorId,
+        issueTitle,
+        issueUrl,
+        issuesChannelId,
+        issueNumber,
+        creatorName,
+        creatorAvatarUrl,
+        creatorHtmlUrl,
       },
     });
-
-    return { issue };
   }
 }
