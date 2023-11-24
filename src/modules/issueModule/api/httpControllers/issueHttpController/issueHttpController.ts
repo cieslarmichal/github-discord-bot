@@ -7,10 +7,9 @@ import {
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
-import { type HttpOkResponse, type HttpBadRequestResponse } from '../../../../../common/types/http/httpResponse.js';
+import { type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
-import { type ResponseErrorBody } from '../../../../../common/types/http/responseErrorBody.js';
 import { type SendIssueCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 
 export class IssueHttpController implements HttpController {
@@ -35,24 +34,26 @@ export class IssueHttpController implements HttpController {
           },
         },
         tags: ['Issue', 'Github', 'Webhook'],
-        description: 'Process issue event issue webhook.',
+        description: 'Process github issue event.',
       }),
     ];
   }
 
   private async processGithubIssueEvent(
     request: HttpRequest<ProcessGithubIssueEventBody>,
-  ): Promise<HttpOkResponse<ProcessGithubIssueEventResponseOkBody> | HttpBadRequestResponse<ResponseErrorBody>> {
+  ): Promise<HttpOkResponse<ProcessGithubIssueEventResponseOkBody>> {
     const { action, issue, user } = request.body;
 
-    await this.sendIssueCreatedMessageCommandHandler.execute({
-      issueTitle: issue.title,
-      issueUrl: issue.url,
-      issueNumber: issue.number,
-      creatorLogin: user.login,
-      creatorAvatarUrl: user.avatar_url,
-      creatorHtmlUrl: user.html_url,
-    });
+    if (action === 'opened') {
+      await this.sendIssueCreatedMessageCommandHandler.execute({
+        issueTitle: issue.title,
+        issueUrl: issue.url,
+        issueNumber: issue.number,
+        creatorName: user.login,
+        creatorAvatarUrl: user.avatar_url,
+        creatorHtmlUrl: user.html_url,
+      });
+    }
 
     return {
       statusCode: HttpStatusCode.ok,

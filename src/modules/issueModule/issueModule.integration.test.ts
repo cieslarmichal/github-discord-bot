@@ -13,8 +13,6 @@ describe('IssueModule', () => {
   });
 
   it('declares bindings', async () => {
-    expect(container.get<IssueHttpController>(issueSymbols.issueHttpController)).toBeInstanceOf(
-      IssueHttpController,
-    );
+    expect(container.get<IssueHttpController>(issueSymbols.issueHttpController)).toBeInstanceOf(IssueHttpController);
   });
 });
