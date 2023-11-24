@@ -2,16 +2,22 @@ import { ConfigProvider } from './configProvider.js';
 import { symbols } from './symbols.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
+import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
 import { type DiscordClient } from '../libs/discord/clients/discordClient/discordClient.js';
 import { DiscordClientFactory } from '../libs/discord/factories/discordClientFactory/discordClientFactory.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
+import { IssueModule } from '../modules/issueModule/issueModule.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
-    const container = DependencyInjectionContainerFactory.create();
+    const configProvider = new ConfigProvider();
 
-    const loggerLevel = ConfigProvider.getLoggerLevel();
+    const modules: DependencyInjectionModule[] = [new IssueModule()];
+
+    const container = DependencyInjectionContainerFactory.create({ modules });
+
+    const loggerLevel = configProvider.getLoggerLevel();
 
     container.bind<LoggerService>(symbols.loggerService, () =>
       LoggerServiceFactory.create({
@@ -20,6 +26,8 @@ export class Application {
     );
 
     container.bind<DiscordClient>(symbols.discordClient, () => DiscordClientFactory.create());
+
+    container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
 
     return container;
   }
@@ -31,7 +39,9 @@ export class Application {
 
     const discordClient = container.get<DiscordClient>(symbols.discordClient);
 
-    const discordToken = ConfigProvider.getDiscordToken();
+    const configProvider = container.get<ConfigProvider>(symbols.configProvider);
+
+    const discordToken = configProvider.getDiscordToken();
 
     discordClient.on('ready', () => {
       loggerService.debug({
