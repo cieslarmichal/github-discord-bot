@@ -3,9 +3,8 @@
 import { TypeClone } from '@sinclair/typebox';
 import { type FastifyInstance, type FastifyReply, type FastifyRequest, type FastifySchema } from 'fastify';
 
-import { ApplicationError } from '../../common/errors/base/applicationError.js';
-import { BaseError } from '../../common/errors/base/baseError.js';
-import { DomainError } from '../../common/errors/base/domainError.js';
+import { ApplicationError } from '../../common/errors/applicationError.js';
+import { BaseError } from '../../common/errors/baseError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpHeader } from '../../common/types/http/httpHeader.js';
 import { type HttpRouteSchema, type HttpRoute } from '../../common/types/http/httpRoute.js';
@@ -138,14 +137,6 @@ export class HttpRouter {
             });
 
             if (error instanceof ApplicationError) {
-              fastifyReply.status(HttpStatusCode.badRequest).send({
-                error: formattedError,
-              });
-
-              return;
-            }
-
-            if (error instanceof DomainError) {
               fastifyReply.status(HttpStatusCode.badRequest).send({
                 error: formattedError,
               });

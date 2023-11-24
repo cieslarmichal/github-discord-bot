@@ -1,24 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/naming-convention */
 
-import { fastifyCors } from '@fastify/cors';
-import { fastifyHelmet } from '@fastify/helmet';
-import { fastifySwagger } from '@fastify/swagger';
-import { fastifySwaggerUi } from '@fastify/swagger-ui';
 import { type TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { fastify, type FastifyInstance } from 'fastify';
 import { type FastifySchemaValidationError } from 'fastify/types/schema.js';
-import { type Server } from 'http';
 
-import { InputNotValidError } from '../../common/errors/common/inputNotValidError.js';
+import { InputNotValidError } from '../../common/errors/inputNotValidError.js';
 import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type BookHttpController } from '../../modules/bookModule/api/httpControllers/bookHttpController/bookHttpController.js';
-import { bookSymbols } from '../../modules/bookModule/symbols.js';
-import { type UserHttpController } from '../../modules/userModule/api/httpControllers/userHttpController/userHttpController.js';
-import { userSymbols } from '../../modules/userModule/symbols.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { coreSymbols } from '../symbols.js';
 
@@ -55,16 +45,6 @@ export class HttpServer {
 
     this.setupErrorHandler();
 
-    await this.initSwagger();
-
-    await this.fastifyInstance.register(fastifyHelmet);
-
-    await this.fastifyInstance.register(fastifyCors, {
-      origin: '*',
-      methods: '*',
-      allowedHeaders: '*',
-    });
-
     this.fastifyInstance.setSerializerCompiler(() => {
       return (data) => JSON.stringify(data);
     });
@@ -86,10 +66,6 @@ export class HttpServer {
         host,
       },
     });
-  }
-
-  public getInternalServerInstance(): Server {
-    return this.fastifyInstance.server;
   }
 
   private setupErrorHandler(): void {
@@ -130,48 +106,6 @@ export class HttpServer {
           statusCode: reply.statusCode,
         },
       });
-    });
-  }
-
-  private async initSwagger(): Promise<void> {
-    await this.fastifyInstance.register(fastifySwagger, {
-      openapi: {
-        info: {
-          title: 'Backend API',
-          version: '1.0.0',
-        },
-        components: {
-          securitySchemes: {
-            bearerAuth: {
-              type: 'http',
-              scheme: 'bearer',
-            },
-          },
-        },
-        security: [
-          {
-            bearerAuth: [],
-          },
-        ],
-      },
-    });
-
-    await this.fastifyInstance.register(fastifySwaggerUi, {
-      routePrefix: '/api/docs',
-      uiConfig: {
-        defaultModelRendering: 'model',
-        defaultModelsExpandDepth: 3,
-        defaultModelExpandDepth: 3,
-      },
-      staticCSP: true,
-    });
-
-    this.loggerService.info({
-      message: 'OpenAPI documentation initialized',
-      context: {
-        source: HttpServer.name,
-        path: '/api/docs',
-      },
     });
   }
 }
