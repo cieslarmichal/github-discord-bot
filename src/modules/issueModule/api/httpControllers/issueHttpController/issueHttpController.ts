@@ -44,6 +44,12 @@ export class IssueHttpController implements HttpController {
   ): Promise<HttpOkResponse<ProcessGithubIssueEventResponseOkBody>> {
     const { action, issue, user } = request.body;
 
+    console.log({
+      action,
+      issue,
+      user,
+    });
+
     if (action === 'opened') {
       await this.sendIssueCreatedMessageCommandHandler.execute({
         issueTitle: issue.title,
