@@ -1,4 +1,5 @@
 import { ConfigProvider } from './configProvider.js';
+import { HttpServer } from './httpServer/httpServer.js';
 import { symbols } from './symbols.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
@@ -49,6 +50,24 @@ export class Application {
     const configProvider = container.get<ConfigProvider>(symbols.configProvider);
 
     const discordToken = configProvider.getDiscordToken();
+
+    const serverHost = configProvider.getServerHost();
+
+    const serverPort = configProvider.getServerPort();
+
+    const server = new HttpServer(container);
+
+    await server.start({
+      host: serverHost,
+      port: serverPort,
+    });
+
+    loggerService.log({
+      message: `Application started.`,
+      context: {
+        source: Application.name,
+      },
+    });
 
     discordClient.on('ready', () => {
       loggerService.debug({

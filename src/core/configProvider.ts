@@ -22,6 +22,22 @@ export class ConfigProvider {
     return LoggerLevel.debug;
   }
 
+  public getServerHost(): string {
+    return EnvParser.parseString({ name: 'SERVER_HOST' }) || '0.0.0.0';
+  }
+
+  public getServerPort(): number {
+    const envVariable = 'SERVER_PORT';
+
+    const serverPort = EnvParser.parseNumber({ name: envVariable });
+
+    if (!Validator.isNumber(serverPort)) {
+      return 8080;
+    }
+
+    return serverPort;
+  }
+
   public getDiscordToken(): string {
     return this.getStringEnvVariable('DISCORD_TOKEN');
   }

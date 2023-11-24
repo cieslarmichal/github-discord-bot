@@ -21,6 +21,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
     this.loggerService.debug({
       message: 'Sending message about created issue...',
       context: {
+        source: SendIssueCreatedMessageCommandHandlerImpl.name,
         issueTitle,
         issueUrl,
         issuesChannelId,
@@ -48,6 +49,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
     this.loggerService.info({
       message: 'Message about created issue sent.',
       context: {
+        source: SendIssueCreatedMessageCommandHandlerImpl.name,
         issueTitle,
         issueUrl,
         issuesChannelId,
