@@ -1,3 +1,4 @@
+import { IssueHttpController } from './api/httpControllers/issueHttpController/issueHttpController.js';
 import { type SendIssueCreatedMessageCommandHandler } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { SendIssueCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
 import { type IssueModuleConfigProvider } from './issueModuleConfigProvider.js';
@@ -22,6 +23,14 @@ export class IssueModule implements DependencyInjectionModule {
           container.get<DiscordService>(coreSymbols.discordService),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<IssueModuleConfigProvider>(symbols.issueModuleConfigProvider),
+        ),
+    );
+
+    container.bind<IssueHttpController>(
+      symbols.issueHttpController,
+      () =>
+        new IssueHttpController(
+          container.get<SendIssueCreatedMessageCommandHandler>(symbols.sendIssueCreatedMessageCommandHandler),
         ),
     );
   }
