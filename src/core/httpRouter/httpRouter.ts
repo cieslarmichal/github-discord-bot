@@ -154,7 +154,15 @@ export class HttpRouter {
             message: 'Caught an unknown error in the HTTP router.',
             context: {
               source: HttpRouter.name,
-              error,
+              error:
+                error instanceof Error
+                  ? {
+                      name: error.name,
+                      message: error.message,
+                      stack: error.stack,
+                      cause: error.cause,
+                    }
+                  : undefined,
               path: fastifyRequest.url,
               method,
               statusCode: fastifyReply.statusCode,
