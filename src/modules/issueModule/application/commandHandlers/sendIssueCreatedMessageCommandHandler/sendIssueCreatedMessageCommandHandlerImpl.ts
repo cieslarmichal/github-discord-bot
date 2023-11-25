@@ -35,7 +35,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
     await this.discordService.sendEmbedMessage({
       message: {
         color: '#00CD2D',
-        title: `${issueNumber}: ${issueTitle}`,
+        title: `#${issueNumber}: ${issueTitle}`,
         url: issueUrl,
         author: {
           name: creatorName,
