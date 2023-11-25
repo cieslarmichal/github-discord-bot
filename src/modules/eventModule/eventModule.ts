@@ -1,6 +1,8 @@
 import { EventHttpController } from './api/httpControllers/eventHttpController/eventHttpController.js';
 import { type SendIssueCreatedMessageCommandHandler } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { SendIssueCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
+import { type SendPullRequestCreatedMessageCommandHandler } from './application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
+import { SendPullRequestCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
 import { type EventModuleConfigProvider } from './eventModuleConfigProvider.js';
 import { symbols } from './symbols.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
@@ -20,6 +22,16 @@ export class EventModule implements DependencyInjectionModule {
       symbols.sendIssueCreatedMessageCommandHandler,
       () =>
         new SendIssueCreatedMessageCommandHandlerImpl(
+          container.get<DiscordService>(coreSymbols.discordService),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),
+        ),
+    );
+
+    container.bind<SendPullRequestCreatedMessageCommandHandler>(
+      symbols.sendPullRequestCreatedMessageCommandHandler,
+      () =>
+        new SendPullRequestCreatedMessageCommandHandlerImpl(
           container.get<DiscordService>(coreSymbols.discordService),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),

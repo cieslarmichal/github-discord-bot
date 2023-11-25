@@ -49,4 +49,8 @@ export class ConfigProvider {
   public getDiscordIssuesChannelId(): string {
     return this.getStringEnvVariable('DISCORD_ISSUES_CHANNEL_ID');
   }
+
+  public getDiscordPullRequestsChannelId(): string {
+    return this.getStringEnvVariable('DISCORD_PULL_REQUESTS_CHANNEL_ID');
+  }
 }

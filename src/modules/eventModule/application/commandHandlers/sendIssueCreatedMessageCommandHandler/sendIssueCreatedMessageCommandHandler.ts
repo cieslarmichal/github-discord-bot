@@ -1,13 +1,10 @@
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
+import { type GithubIssue } from '../../types/githubIssue.js';
+import { type GithubUser } from '../../types/githubUser.js';
 
 export interface SendIssueCreatedMessageCommandHandlerPayload {
-  readonly issueTitle: string;
-  readonly issueUrl: string;
-  readonly issueNumber: number;
-  readonly issueLabels: { color: string; name: string }[];
-  readonly creatorAvatarUrl: string;
-  readonly creatorHtmlUrl: string;
-  readonly creatorName: string;
+  readonly issue: GithubIssue;
+  readonly creator: GithubUser;
 }
 
 export type SendIssueCreatedMessageCommandHandler = CommandHandler<SendIssueCreatedMessageCommandHandlerPayload, void>;

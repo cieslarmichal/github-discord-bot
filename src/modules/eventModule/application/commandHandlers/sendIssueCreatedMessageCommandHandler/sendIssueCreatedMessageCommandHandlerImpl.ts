@@ -17,7 +17,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
   ) {}
 
   public async execute(payload: SendIssueCreatedMessageCommandHandlerPayload): Promise<void> {
-    const { issueTitle, issueUrl, issueNumber, issueLabels, creatorName, creatorAvatarUrl, creatorHtmlUrl } = payload;
+    const { issue, creator } = payload;
 
     const issuesChannelId = this.eventModuleConfigProvider.getDiscordIssuesChannelId();
 
@@ -25,28 +25,29 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
       message: 'Sending message about created issue...',
       context: {
         source: SendIssueCreatedMessageCommandHandlerImpl.name,
-        issueTitle,
-        issueUrl,
+        issueTitle: issue.title,
+        issueUrl: issue.url,
+        creatorName: creator.name,
         issuesChannelId,
       },
     });
 
-    const issueLabel = issueLabels[0];
+    const issueLabel = issue.labels[0];
 
     const messageColor = issueLabel ? issueLabel.color : '#00CD2D';
 
-    const messageTitle = `#${issueNumber}: ${issueTitle}`;
+    const messageTitle = `#${issue.number}: ${issue.title}`;
 
     let embedMessageDraft: SendEmbedMessagePayload = {
       message: {
         color: messageColor,
-        url: issueUrl,
+        url: issue.url,
         title: messageTitle,
         author: {
-          name: creatorName,
-          url: creatorHtmlUrl,
+          name: creator.name,
+          url: creator.profileUrl,
         },
-        thumbnail: creatorAvatarUrl,
+        thumbnail: creator.avatarUrl,
       },
       channelId: issuesChannelId,
     };
@@ -67,8 +68,9 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
       message: 'Message about created issue sent.',
       context: {
         source: SendIssueCreatedMessageCommandHandlerImpl.name,
-        issueTitle,
-        issueUrl,
+        issueTitle: issue.title,
+        issueUrl: issue.url,
+        creatorName: creator.name,
         issuesChannelId,
       },
     });
