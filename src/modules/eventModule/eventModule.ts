@@ -1,7 +1,7 @@
-import { IssueHttpController } from './api/httpControllers/issueHttpController/issueHttpController.js';
+import { EventHttpController } from './api/httpControllers/eventHttpController/eventHttpController.js';
 import { type SendIssueCreatedMessageCommandHandler } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { SendIssueCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
-import { type IssueModuleConfigProvider } from './issueModuleConfigProvider.js';
+import { type EventModuleConfigProvider } from './eventModuleConfigProvider.js';
 import { symbols } from './symbols.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
 import { coreSymbols } from '../../core/symbols.js';
@@ -10,9 +10,9 @@ import { type DependencyInjectionModule } from '../../libs/dependencyInjection/d
 import { type DiscordService } from '../../libs/discord/services/discordService/discordService.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 
-export class IssueModule implements DependencyInjectionModule {
+export class EventModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
-    container.bind<IssueModuleConfigProvider>(symbols.issueModuleConfigProvider, () =>
+    container.bind<EventModuleConfigProvider>(symbols.eventModuleConfigProvider, () =>
       container.get<ConfigProvider>(coreSymbols.configProvider),
     );
 
@@ -22,14 +22,14 @@ export class IssueModule implements DependencyInjectionModule {
         new SendIssueCreatedMessageCommandHandlerImpl(
           container.get<DiscordService>(coreSymbols.discordService),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<IssueModuleConfigProvider>(symbols.issueModuleConfigProvider),
+          container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),
         ),
     );
 
-    container.bind<IssueHttpController>(
-      symbols.issueHttpController,
+    container.bind<EventHttpController>(
+      symbols.eventHttpController,
       () =>
-        new IssueHttpController(
+        new EventHttpController(
           container.get<SendIssueCreatedMessageCommandHandler>(symbols.sendIssueCreatedMessageCommandHandler),
         ),
     );

@@ -10,13 +10,13 @@ import { type DiscordService } from '../libs/discord/services/discordService/dis
 import { DiscordServiceImpl } from '../libs/discord/services/discordService/discordServiceImpl.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
-import { IssueModule } from '../modules/issueModule/issueModule.js';
+import { EventModule } from '../modules/eventModule/eventModule.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
     const configProvider = new ConfigProvider();
 
-    const modules: DependencyInjectionModule[] = [new IssueModule()];
+    const modules: DependencyInjectionModule[] = [new EventModule()];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
 

@@ -3,7 +3,7 @@ import {
   processGithubIssueEventResponseOkBodySchema,
   type ProcessGithubIssueEventBody,
   type ProcessGithubIssueEventResponseOkBody,
-} from './schemas/processGithubIssueEvent.js';
+} from './schemas/processGithubIssueEventSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -12,8 +12,8 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { type SendIssueCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 
-export class IssueHttpController implements HttpController {
-  public readonly basePath = '/issues/github/webhook';
+export class EventHttpController implements HttpController {
+  public readonly basePath = '/events/github';
 
   public constructor(private readonly sendIssueCreatedMessageCommandHandler: SendIssueCreatedMessageCommandHandler) {}
 
@@ -21,6 +21,7 @@ export class IssueHttpController implements HttpController {
     return [
       new HttpRoute({
         method: HttpMethodName.post,
+        path: '/issues',
         handler: this.processGithubIssueEvent.bind(this),
         schema: {
           request: {

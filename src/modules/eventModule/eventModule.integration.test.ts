@@ -1,11 +1,11 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
-import { IssueHttpController } from './api/httpControllers/issueHttpController/issueHttpController.js';
-import { issueSymbols } from './symbols.js';
+import { EventHttpController } from './api/httpControllers/eventHttpController/eventHttpController.js';
+import { eventSymbols } from './symbols.js';
 import { Application } from '../../core/application.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 
-describe('IssueModule', () => {
+describe('EventModule', () => {
   let container: DependencyInjectionContainer;
 
   beforeEach(async () => {
@@ -13,6 +13,6 @@ describe('IssueModule', () => {
   });
 
   it('declares bindings', async () => {
-    expect(container.get<IssueHttpController>(issueSymbols.issueHttpController)).toBeInstanceOf(IssueHttpController);
+    expect(container.get<EventHttpController>(eventSymbols.eventHttpController)).toBeInstanceOf(EventHttpController);
   });
 });
