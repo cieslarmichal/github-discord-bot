@@ -2,7 +2,10 @@ import {
   type SendIssueCreatedMessageCommandHandler,
   type SendIssueCreatedMessageCommandHandlerPayload,
 } from './sendIssueCreatedMessageCommandHandler.js';
-import { type DiscordService } from '../../../../../libs/discord/services/discordService/discordService.js';
+import {
+  type SendEmbedMessagePayload,
+  type DiscordService,
+} from '../../../../../libs/discord/services/discordService/discordService.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type EventModuleConfigProvider } from '../../../eventModuleConfigProvider.js';
 
@@ -34,16 +37,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
 
     const messageTitle = `#${issueNumber}: ${issueTitle}`;
 
-    const customFields = issueLabel
-      ? [
-          {
-            name: 'label',
-            value: issueLabel.name,
-          },
-        ]
-      : [];
-
-    await this.discordService.sendEmbedMessage({
+    let embedMessageDraft: SendEmbedMessagePayload = {
       message: {
         color: messageColor,
         url: issueUrl,
@@ -53,10 +47,21 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
           url: creatorHtmlUrl,
         },
         thumbnail: creatorAvatarUrl,
-        customFields,
       },
       channelId: issuesChannelId,
-    });
+    };
+
+    if (issueLabel) {
+      embedMessageDraft = {
+        ...embedMessageDraft,
+        message: {
+          ...embedMessageDraft.message,
+          description: issueLabel.name,
+        },
+      };
+    }
+
+    await this.discordService.sendEmbedMessage(embedMessageDraft);
 
     this.loggerService.info({
       message: 'Message about created issue sent.',

@@ -54,7 +54,7 @@ export class DiscordServiceImpl implements DiscordService {
       embedMessage.setDescription(message.description);
     }
 
-    if (message.customFields.length) {
+    if (message.customFields?.length) {
       embedMessage.addFields(message.customFields);
     }
 
