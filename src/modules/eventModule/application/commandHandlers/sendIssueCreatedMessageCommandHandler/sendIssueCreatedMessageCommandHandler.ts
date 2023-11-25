@@ -4,6 +4,7 @@ export interface SendIssueCreatedMessageCommandHandlerPayload {
   readonly issueTitle: string;
   readonly issueUrl: string;
   readonly issueNumber: number;
+  readonly issueLabels: { color: string; name: string }[];
   readonly creatorAvatarUrl: string;
   readonly creatorHtmlUrl: string;
   readonly creatorName: string;

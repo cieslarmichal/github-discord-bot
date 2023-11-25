@@ -14,7 +14,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
   ) {}
 
   public async execute(payload: SendIssueCreatedMessageCommandHandlerPayload): Promise<void> {
-    const { issueTitle, issueUrl, issueNumber, creatorName, creatorAvatarUrl, creatorHtmlUrl } = payload;
+    const { issueTitle, issueUrl, issueNumber, issueLabels, creatorName, creatorAvatarUrl, creatorHtmlUrl } = payload;
 
     const issuesChannelId = this.eventModuleConfigProvider.getDiscordIssuesChannelId();
 
@@ -25,23 +25,35 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
         issueTitle,
         issueUrl,
         issuesChannelId,
-        issueNumber,
-        creatorName,
-        creatorAvatarUrl,
-        creatorHtmlUrl,
       },
     });
 
+    const issueLabel = issueLabels[0];
+
+    const messageColor = issueLabel ? issueLabel.color : '#00CD2D';
+
+    const messageTitle = `#${issueNumber}: ${issueTitle}`;
+
+    const customFields = issueLabel
+      ? [
+          {
+            name: 'label',
+            value: issueLabel.name,
+          },
+        ]
+      : [];
+
     await this.discordService.sendEmbedMessage({
       message: {
-        color: '#00CD2D',
-        title: `#${issueNumber}: ${issueTitle}`,
+        color: messageColor,
         url: issueUrl,
+        title: messageTitle,
         author: {
           name: creatorName,
           url: creatorHtmlUrl,
         },
         thumbnail: creatorAvatarUrl,
+        customFields,
       },
       channelId: issuesChannelId,
     });
@@ -53,10 +65,6 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
         issueTitle,
         issueUrl,
         issuesChannelId,
-        issueNumber,
-        creatorName,
-        creatorAvatarUrl,
-        creatorHtmlUrl,
       },
     });
   }

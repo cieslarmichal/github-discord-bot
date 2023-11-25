@@ -8,6 +8,12 @@ export const processGithubIssueEventBodySchema = Type.Object({
     title: Type.String(),
     number: Type.Number(),
     url: Type.String(),
+    labels: Type.Array(
+      Type.Object({
+        color: Type.String(),
+        name: Type.String(),
+      }),
+    ),
   }),
   sender: Type.Object({
     avatar_url: Type.String(),

@@ -50,6 +50,7 @@ export class EventHttpController implements HttpController {
         issueTitle: issue.title,
         issueUrl: issue.url,
         issueNumber: issue.number,
+        issueLabels: issue.labels,
         creatorName: sender.login,
         creatorAvatarUrl: sender.avatar_url,
         creatorHtmlUrl: sender.html_url,

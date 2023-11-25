@@ -14,6 +14,7 @@ export interface SendEmbedMessagePayload {
     };
     readonly thumbnail: string;
     readonly description?: string;
+    readonly customFields: { name: string; value: string }[];
   };
   readonly channelId: string;
 }
