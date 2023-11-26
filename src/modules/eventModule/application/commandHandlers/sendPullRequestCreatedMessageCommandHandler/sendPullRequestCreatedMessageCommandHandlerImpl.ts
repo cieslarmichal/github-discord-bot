@@ -6,9 +6,9 @@ import {
   type SendEmbedMessagePayload,
   type DiscordService,
 } from '../../../../../libs/discord/services/discordService/discordService.js';
+import { type GithubService } from '../../../../../libs/github/services/githubService/githubService.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type EventModuleConfigProvider } from '../../../eventModuleConfigProvider.js';
-import { type GithubService } from '../../services/githubService/githubService.js';
 
 export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPullRequestCreatedMessageCommandHandler {
   public constructor(
@@ -24,8 +24,6 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
     const pullRequestsChannelId = this.configProvider.getDiscordPullRequestsChannelId();
 
     const repositoryName = this.configProvider.getGithubRepositoryName();
-
-    const repositoryOwner = this.configProvider.getGithubRepositoryOwner();
 
     this.loggerService.debug({
       message: 'Sending message about created pull request...',
@@ -46,7 +44,6 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
 
     const commits = await this.githubService.getPullRequestCommits({
       repositoryName,
-      repositoryOwner,
       pullRequestNumber: pullRequest.number,
     });
 

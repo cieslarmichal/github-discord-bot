@@ -8,6 +8,8 @@ import { type DiscordClient } from '../libs/discord/clients/discordClient/discor
 import { DiscordClientFactory } from '../libs/discord/factories/discordClientFactory/discordClientFactory.js';
 import { type DiscordService } from '../libs/discord/services/discordService/discordService.js';
 import { DiscordServiceImpl } from '../libs/discord/services/discordService/discordServiceImpl.js';
+import { GithubServiceFactory } from '../libs/github/factories/githubServiceFactory/githubServiceFactory.js';
+import { type GithubService } from '../libs/github/services/githubService/githubService.js';
 import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFactory/httpServiceFactory.js';
 import { type HttpService } from '../libs/httpService/services/httpService/httpService.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
@@ -38,6 +40,10 @@ export class Application {
     );
 
     container.bind<HttpService>(symbols.httpService, () => HttpServiceFactory.create());
+
+    container.bind<GithubService>(symbols.githubService, () =>
+      GithubServiceFactory.create(container.get<HttpService>(symbols.httpService)),
+    );
 
     container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
 
@@ -73,13 +79,6 @@ export class Application {
       },
     });
 
-    discordClient.on('ready', () => {
-      loggerService.debug({
-        message: 'Discord client is ready.',
-        context: { user: discordClient.user?.tag },
-      });
-    });
-
     discordClient.on('guildMemberAdd', async (member) => {
       loggerService.debug({
         message: 'New user joined the server.',
@@ -107,6 +106,7 @@ export class Application {
       });
     });
 
+    // TODO: add discord service method
     await discordClient.login(discordToken);
   }
 }

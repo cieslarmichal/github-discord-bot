@@ -1,4 +1,4 @@
-import { InfrastructureError } from '../../../../common/errors/infrastructureError.js';
+import { InfrastructureError } from '../../../common/errors/infrastructureError.js';
 
 interface Context {
   readonly entity: string;

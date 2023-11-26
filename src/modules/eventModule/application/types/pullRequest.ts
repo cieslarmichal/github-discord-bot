@@ -1,4 +1,4 @@
-export interface GithubPullRequest {
+export interface PullRequest {
   readonly title: string;
   readonly number: number;
   readonly url: string;

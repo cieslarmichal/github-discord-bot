@@ -20,6 +20,7 @@ import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { type SendIssueCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { type SendPullRequestCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendPullRequestCreatedMessageCommandHandler.js';
+import { type SendPullRequestMergedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandler.js';
 
 export class EventHttpController implements HttpController {
   public readonly basePath = '/events/github';
@@ -27,6 +28,7 @@ export class EventHttpController implements HttpController {
   public constructor(
     private readonly sendIssueCreatedMessageCommandHandler: SendIssueCreatedMessageCommandHandler,
     private readonly sendPullRequestCreatedMessageCommandHandler: SendPullRequestCreatedMessageCommandHandler,
+    private readonly sendPullRequestMergedMessageCommandHandler: SendPullRequestMergedMessageCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -104,6 +106,23 @@ export class EventHttpController implements HttpController {
 
     if (action === 'opened') {
       await this.sendPullRequestCreatedMessageCommandHandler.execute({
+        pullRequest: {
+          title: pull_request.title,
+          number: pull_request.number,
+          url: pull_request.url,
+          numberOfCommits: pull_request.commits,
+          commitsUrl: pull_request.commits_url,
+          sourceBranch: pull_request.head.ref,
+          targetBranch: pull_request.head.ref,
+        },
+        creator: {
+          name: sender.login,
+          profileUrl: sender.html_url,
+          avatarUrl: sender.avatar_url,
+        },
+      });
+    } else if (action === 'closed' && pull_request.merged) {
+      await this.sendPullRequestMergedMessageCommandHandler.execute({
         pullRequest: {
           title: pull_request.title,
           number: pull_request.number,

@@ -13,6 +13,10 @@ export class DiscordClientFactory {
       ],
     });
 
+    client.on('ready', () => {
+      console.log(`Discord client ${client.user?.tag} is ready.`);
+    });
+
     return client;
   }
 }

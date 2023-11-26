@@ -1,4 +1,4 @@
-export interface GithubIssue {
+export interface Issue {
   readonly title: string;
   readonly number: number;
   readonly url: string;

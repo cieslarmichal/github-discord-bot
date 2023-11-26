@@ -1,15 +1,15 @@
-import { type GetAuthorPullRequestsHttpResponseBody } from './httpRequests/getAuthorPullRequestsHttpResponse.js';
-import { type GetPullRequestCommitsHttpResponseBody } from './httpRequests/getPullRequestCommitsHttpResponse.js';
-import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
-import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
-import { type HttpService } from '../../../../../libs/httpService/services/httpService/httpService.js';
 import {
   type GithubService,
   type GetPullRequestCommitsPayload,
   type GetNumberOfPullRequestsByAuthorPayload,
-} from '../../../application/services/githubService/githubService.js';
-import { type GithubCommit } from '../../../application/types/githubCommit.js';
+} from './githubService.js';
+import { type GetAuthorPullRequestsHttpResponseBody } from './httpRequests/getAuthorPullRequestsHttpResponse.js';
+import { type GetPullRequestCommitsHttpResponseBody } from './httpRequests/getPullRequestCommitsHttpResponse.js';
+import { HttpMethodName } from '../../../../common/types/http/httpMethodName.js';
+import { HttpStatusCode } from '../../../../common/types/http/httpStatusCode.js';
+import { type HttpService } from '../../../httpService/services/httpService/httpService.js';
 import { GithubServiceError } from '../../errors/githubServiceError.js';
+import { type GithubCommit } from '../../types/githubCommit.js';
 
 export class GithubServiceImpl implements GithubService {
   private readonly githubBaseUrl = 'https://api.github.com';
