@@ -2,7 +2,7 @@ import { type GithubCommit } from '../../types/githubCommit.js';
 
 export interface GetPullRequestCommitsPayload {
   readonly repositoryName: string;
-  readonly repositoryOwnerName: string;
+  readonly repositoryOwner: string;
   readonly pullRequestNumber: number;
 }
 

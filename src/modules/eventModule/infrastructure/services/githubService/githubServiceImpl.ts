@@ -15,9 +15,9 @@ export class GithubServiceImpl implements GithubService {
   public constructor(private readonly httpService: HttpService) {}
 
   public async getPullRequestCommits(payload: GetPullRequestCommitsPayload): Promise<GithubCommit[]> {
-    const { pullRequestNumber, repositoryName, repositoryOwnerName } = payload;
+    const { pullRequestNumber, repositoryName, repositoryOwner } = payload;
 
-    const commitsUrl = `${this.githubBaseUrl}/repos/${repositoryOwnerName}/${repositoryName}/pulls/${pullRequestNumber}/commits`;
+    const commitsUrl = `${this.githubBaseUrl}/repos/${repositoryOwner}/${repositoryName}/pulls/${pullRequestNumber}/commits`;
 
     const commitsResponse = await this.httpService.sendRequest<GetPullRequestCommitsHttpResponseBody>({
       method: HttpMethodName.get,
