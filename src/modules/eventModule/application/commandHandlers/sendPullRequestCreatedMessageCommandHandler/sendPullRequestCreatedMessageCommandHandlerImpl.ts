@@ -40,7 +40,9 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
 
     const messageTitle = `#${pullRequest.number}: ${pullRequest.title}`;
 
-    const messageDescription = `Merge ${pullRequest.numberOfCommits} commits from \`${pullRequest.sourceBranch}\` into \`${pullRequest.targetBranch}\``;
+    const commitsForm = pullRequest.numberOfCommits === 1 ? 'commit' : 'commits';
+
+    const messageDescription = `${creator.name} wants to merge ${pullRequest.numberOfCommits} ${commitsForm} into ${pullRequest.targetBranch} from ${pullRequest.sourceBranch}`;
 
     const commits = await this.githubService.getPullRequestCommits({
       repositoryName,
