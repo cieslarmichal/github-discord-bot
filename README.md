@@ -1,1 +1,1 @@
-# Faker-cxx community discord bot
+# Github community discord bot
