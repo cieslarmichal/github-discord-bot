@@ -7,7 +7,7 @@ import { HttpServiceError } from '../../errors/httpServiceError.js';
 export class HttpServiceImpl implements HttpService {
   public constructor(private readonly httpClient: HttpClient) {}
 
-  public async sendRequest(payload: SendRequestPayload): Promise<HttpResponse> {
+  public async sendRequest<ResponseBody>(payload: SendRequestPayload): Promise<HttpResponse<ResponseBody>> {
     const { method, url: initialUrl, headers, queryParams, body: requestBody } = payload;
 
     const body = JSON.stringify(requestBody);
@@ -49,7 +49,7 @@ export class HttpServiceImpl implements HttpService {
       });
 
       return {
-        body: responseBody,
+        body: responseBody as ResponseBody,
         statusCode: response.status,
       };
     } catch (error) {

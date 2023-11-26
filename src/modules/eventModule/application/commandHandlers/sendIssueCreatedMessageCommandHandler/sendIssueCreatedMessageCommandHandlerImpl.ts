@@ -13,13 +13,13 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
   public constructor(
     private readonly discordService: DiscordService,
     private readonly loggerService: LoggerService,
-    private readonly eventModuleConfigProvider: EventModuleConfigProvider,
+    private readonly configProvider: EventModuleConfigProvider,
   ) {}
 
   public async execute(payload: SendIssueCreatedMessageCommandHandlerPayload): Promise<void> {
     const { issue, creator } = payload;
 
-    const issuesChannelId = this.eventModuleConfigProvider.getDiscordIssuesChannelId();
+    const issuesChannelId = this.configProvider.getDiscordIssuesChannelId();
 
     this.loggerService.debug({
       message: 'Sending message about created issue...',

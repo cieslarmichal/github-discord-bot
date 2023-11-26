@@ -8,6 +8,8 @@ import { type DiscordClient } from '../libs/discord/clients/discordClient/discor
 import { DiscordClientFactory } from '../libs/discord/factories/discordClientFactory/discordClientFactory.js';
 import { type DiscordService } from '../libs/discord/services/discordService/discordService.js';
 import { DiscordServiceImpl } from '../libs/discord/services/discordService/discordServiceImpl.js';
+import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFactory/httpServiceFactory.js';
+import { type HttpService } from '../libs/httpService/services/httpService/httpService.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
 import { EventModule } from '../modules/eventModule/eventModule.js';
@@ -34,6 +36,8 @@ export class Application {
       symbols.discordService,
       () => new DiscordServiceImpl(container.get<DiscordClient>(symbols.discordClient)),
     );
+
+    container.bind<HttpService>(symbols.httpService, () => HttpServiceFactory.create());
 
     container.bind<ConfigProvider>(symbols.configProvider, () => configProvider);
 

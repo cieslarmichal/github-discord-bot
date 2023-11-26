@@ -3,6 +3,7 @@ export const symbols = {
   discordClient: Symbol('discordClient'),
   discordService: Symbol('discordService'),
   configProvider: Symbol('configProvider'),
+  httpService: Symbol('httpService'),
 };
 
 export const coreSymbols = {
@@ -10,4 +11,5 @@ export const coreSymbols = {
   discordClient: symbols.discordClient,
   discordService: symbols.discordService,
   configProvider: symbols.configProvider,
+  httpService: symbols.httpService,
 };

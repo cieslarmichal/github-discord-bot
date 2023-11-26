@@ -3,7 +3,7 @@ export interface GithubPullRequest {
   readonly number: number;
   readonly url: string;
   readonly numberOfCommits: number;
-  readonly commitsUrl: number;
+  readonly commitsUrl: string;
   readonly sourceBranch: string;
   readonly targetBranch: string;
 }

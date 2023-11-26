@@ -13,13 +13,13 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
   public constructor(
     private readonly discordService: DiscordService,
     private readonly loggerService: LoggerService,
-    private readonly eventModuleConfigProvider: EventModuleConfigProvider,
+    private readonly configProvider: EventModuleConfigProvider,
   ) {}
 
   public async execute(payload: SendPullRequestCreatedMessageCommandHandlerPayload): Promise<void> {
     const { pullRequest, creator } = payload;
 
-    const pullRequestsChannelId = this.eventModuleConfigProvider.getDiscordPullRequestsChannelId();
+    const pullRequestsChannelId = this.configProvider.getDiscordPullRequestsChannelId();
 
     this.loggerService.debug({
       message: 'Sending message about created pull request...',

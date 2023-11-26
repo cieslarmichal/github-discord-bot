@@ -19,11 +19,15 @@ import { type HttpOkResponse } from '../../../../../common/types/http/httpRespon
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
 import { type SendIssueCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
+import { type SendPullRequestCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 
 export class EventHttpController implements HttpController {
   public readonly basePath = '/events/github';
 
-  public constructor(private readonly sendIssueCreatedMessageCommandHandler: SendIssueCreatedMessageCommandHandler) {}
+  public constructor(
+    private readonly sendIssueCreatedMessageCommandHandler: SendIssueCreatedMessageCommandHandler,
+    private readonly sendPullRequestCreatedMessageCommandHandler: SendPullRequestCreatedMessageCommandHandler,
+  ) {}
 
   public getHttpRoutes(): HttpRoute[] {
     return [
@@ -73,13 +77,17 @@ export class EventHttpController implements HttpController {
 
     if (action === 'opened') {
       await this.sendIssueCreatedMessageCommandHandler.execute({
-        issueTitle: issue.title,
-        issueUrl: issue.url,
-        issueNumber: issue.number,
-        issueLabels: issue.labels,
-        creatorName: sender.login,
-        creatorAvatarUrl: sender.avatar_url,
-        creatorHtmlUrl: sender.html_url,
+        issue: {
+          title: issue.title,
+          number: issue.number,
+          url: issue.url,
+          labels: issue.labels,
+        },
+        creator: {
+          name: sender.login,
+          profileUrl: sender.html_url,
+          avatarUrl: sender.avatar_url,
+        },
       });
     }
 
@@ -95,14 +103,21 @@ export class EventHttpController implements HttpController {
     const { action, pull_request, sender } = request.body;
 
     if (action === 'opened') {
-      await this.sendIssueCreatedMessageCommandHandler.execute({
-        issueTitle: issue.title,
-        issueUrl: issue.url,
-        issueNumber: issue.number,
-        issueLabels: issue.labels,
-        creatorName: sender.login,
-        creatorAvatarUrl: sender.avatar_url,
-        creatorHtmlUrl: sender.html_url,
+      await this.sendPullRequestCreatedMessageCommandHandler.execute({
+        pullRequest: {
+          title: pull_request.title,
+          number: pull_request.number,
+          url: pull_request.url,
+          numberOfCommits: pull_request.commits,
+          commitsUrl: pull_request.commits_url,
+          sourceBranch: pull_request.head.ref,
+          targetBranch: pull_request.head.ref,
+        },
+        creator: {
+          name: sender.login,
+          profileUrl: sender.html_url,
+          avatarUrl: sender.avatar_url,
+        },
       });
     }
 
