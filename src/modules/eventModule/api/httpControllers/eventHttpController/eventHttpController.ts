@@ -113,7 +113,7 @@ export class EventHttpController implements HttpController {
           numberOfCommits: pull_request.commits,
           commitsUrl: pull_request.commits_url,
           sourceBranch: pull_request.head.ref,
-          targetBranch: pull_request.head.ref,
+          targetBranch: pull_request.base.ref,
         },
         creator: {
           name: sender.login,
@@ -130,7 +130,7 @@ export class EventHttpController implements HttpController {
           numberOfCommits: pull_request.commits,
           commitsUrl: pull_request.commits_url,
           sourceBranch: pull_request.head.ref,
-          targetBranch: pull_request.head.ref,
+          targetBranch: pull_request.base.ref,
         },
         creator: {
           name: sender.login,
