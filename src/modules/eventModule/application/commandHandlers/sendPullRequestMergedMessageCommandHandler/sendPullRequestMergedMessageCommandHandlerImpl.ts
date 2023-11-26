@@ -1,7 +1,7 @@
 import {
-  type SendPullRequestCreatedMessageCommandHandler,
-  type SendPullRequestCreatedMessageCommandHandlerPayload,
-} from './sendIssueCreatedMessageCommandHandler.js';
+  type SendPullRequestMergedMessageCommandHandler,
+  type SendPullRequestMergedMessageCommandHandlerPayload,
+} from './sendPullRequestMergedMessageCommandHandler.js';
 import {
   type SendEmbedMessagePayload,
   type DiscordService,
@@ -10,7 +10,7 @@ import { type LoggerService } from '../../../../../libs/logger/services/loggerSe
 import { type EventModuleConfigProvider } from '../../../eventModuleConfigProvider.js';
 import { type GithubService } from '../../services/githubService/githubService.js';
 
-export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPullRequestCreatedMessageCommandHandler {
+export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullRequestMergedMessageCommandHandler {
   public constructor(
     private readonly discordService: DiscordService,
     private readonly loggerService: LoggerService,
@@ -18,35 +18,41 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
     private readonly githubService: GithubService,
   ) {}
 
-  public async execute(payload: SendPullRequestCreatedMessageCommandHandlerPayload): Promise<void> {
+  public async execute(payload: SendPullRequestMergedMessageCommandHandlerPayload): Promise<void> {
     const { pullRequest, creator } = payload;
 
     const pullRequestsChannelId = this.configProvider.getDiscordPullRequestsChannelId();
 
     const repositoryName = this.configProvider.getGithubRepositoryName();
 
-    const repositoryOwner = this.configProvider.getGithubRepositoryOwner();
-
     this.loggerService.debug({
-      message: 'Sending message about created pull request...',
+      message: 'Sending message about merged pull request...',
       context: {
-        source: SendPullRequestCreatedMessageCommandHandlerImpl.name,
+        source: SendPullRequestMergedMessageCommandHandlerImpl.name,
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
         creatorName: creator.name,
         pullRequestsChannelId,
+        repositoryName,
       },
     });
 
-    const messageColor = '#00CD2D';
+    const messageColor = '#8d56e4';
 
-    const messageTitle = `#${pullRequest.number}: ${pullRequest.title}`;
+    const messageTitle = `Merged #${pullRequest.number}: ${pullRequest.title}`;
 
-    const messageDescription = `Merge ${pullRequest.numberOfCommits} commits from \`${pullRequest.sourceBranch}\` into \`${pullRequest.targetBranch}\``;
+    const numberOfUserPullRequests = 2;
+
+    let messageDescription;
+
+    if (numberOfUserPullRequests === 1) {
+      messageDescription = `${creator.name} merged this first pull request!`;
+    } else {
+      messageDescription = `${creator.name} merged this ${numberOfUserPullRequests} pull requests.`;
+    }
 
     const commits = await this.githubService.getPullRequestCommits({
       repositoryName,
-      repositoryOwner,
       pullRequestNumber: pullRequest.number,
     });
 
@@ -74,13 +80,14 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
     await this.discordService.sendEmbedMessage(embedMessageDraft);
 
     this.loggerService.info({
-      message: 'Message about created pull request sent.',
+      message: 'Message about merged pull request sent.',
       context: {
-        source: SendPullRequestCreatedMessageCommandHandlerImpl.name,
+        source: SendPullRequestMergedMessageCommandHandlerImpl.name,
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
         creatorName: creator.name,
         pullRequestsChannelId,
+        repositoryName,
       },
     });
   }

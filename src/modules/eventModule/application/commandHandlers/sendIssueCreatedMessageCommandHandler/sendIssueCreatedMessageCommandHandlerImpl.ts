@@ -34,7 +34,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
 
     const issueLabel = issue.labels[0];
 
-    const messageColor = issueLabel ? issueLabel.color : '#00CD2D';
+    const messageColor = '#00CD2D';
 
     const messageTitle = `#${issue.number}: ${issue.title}`;
 

@@ -57,8 +57,4 @@ export class ConfigProvider {
   public getGithubRepositoryName(): string {
     return this.getStringEnvVariable('GITHUB_REPOSITORY_NAME');
   }
-
-  public getGithubRepositoryOwner(): string {
-    return this.getStringEnvVariable('GITHUB_REPOSITORY_OWNER');
-  }
 }
