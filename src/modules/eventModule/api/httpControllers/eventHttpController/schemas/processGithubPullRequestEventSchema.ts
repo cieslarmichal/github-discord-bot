@@ -13,11 +13,11 @@ export const processGithubPullRequestEventBodySchema = Type.Object({
     merged: Type.Boolean(),
     base: Type.Object({ ref: Type.String() }),
     head: Type.Object({ ref: Type.String() }),
-  }),
-  sender: Type.Object({
-    avatar_url: Type.String(),
-    html_url: Type.String(),
-    login: Type.String(),
+    user: Type.Object({
+      avatar_url: Type.String(),
+      html_url: Type.String(),
+      login: Type.String(),
+    }),
   }),
 });
 

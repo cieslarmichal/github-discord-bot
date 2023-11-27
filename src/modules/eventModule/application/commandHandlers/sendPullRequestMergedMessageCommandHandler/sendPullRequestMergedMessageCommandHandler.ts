@@ -1,10 +1,16 @@
 import { type CommandHandler } from '../../../../../common/types/commandHandler.js';
-import { type PullRequest } from '../../types/pullRequest.js';
-import { type User } from '../../types/user.js';
 
 export interface SendPullRequestMergedMessageCommandHandlerPayload {
-  readonly pullRequest: PullRequest;
-  readonly creator: User;
+  readonly pullRequest: {
+    readonly title: string;
+    readonly number: number;
+    readonly url: string;
+  };
+  readonly creator: {
+    readonly name: string;
+    readonly profileUrl: string;
+    readonly avatarUrl: string;
+  };
 }
 
 export type SendPullRequestMergedMessageCommandHandler = CommandHandler<

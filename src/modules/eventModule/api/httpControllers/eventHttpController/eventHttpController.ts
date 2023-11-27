@@ -102,7 +102,7 @@ export class EventHttpController implements HttpController {
   private async processGithubPullRequestEvent(
     request: HttpRequest<ProcessGithubPullRequestEventBody>,
   ): Promise<HttpOkResponse<ProcessGithubPullRequestEventResponseOkBody>> {
-    const { action, pull_request, sender } = request.body;
+    const { action, pull_request } = request.body;
 
     if (action === 'opened') {
       await this.sendPullRequestCreatedMessageCommandHandler.execute({
@@ -116,9 +116,9 @@ export class EventHttpController implements HttpController {
           targetBranch: pull_request.base.ref,
         },
         creator: {
-          name: sender.login,
-          profileUrl: sender.html_url,
-          avatarUrl: sender.avatar_url,
+          name: pull_request.user.login,
+          profileUrl: pull_request.user.html_url,
+          avatarUrl: pull_request.user.avatar_url,
         },
       });
     } else if (action === 'closed' && pull_request.merged) {
@@ -127,15 +127,11 @@ export class EventHttpController implements HttpController {
           title: pull_request.title,
           number: pull_request.number,
           url: pull_request.url,
-          numberOfCommits: pull_request.commits,
-          commitsUrl: pull_request.commits_url,
-          sourceBranch: pull_request.head.ref,
-          targetBranch: pull_request.base.ref,
         },
         creator: {
-          name: sender.login,
-          profileUrl: sender.html_url,
-          avatarUrl: sender.avatar_url,
+          name: pull_request.user.login,
+          profileUrl: pull_request.user.html_url,
+          avatarUrl: pull_request.user.avatar_url,
         },
       });
     }
