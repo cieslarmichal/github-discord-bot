@@ -82,7 +82,7 @@ export class EventHttpController implements HttpController {
         issue: {
           title: issue.title,
           number: issue.number,
-          url: issue.url,
+          url: issue.html_url,
           labels: issue.labels,
         },
         author: {
@@ -102,14 +102,14 @@ export class EventHttpController implements HttpController {
   private async processGithubPullRequestEvent(
     request: HttpRequest<ProcessGithubPullRequestEventBody>,
   ): Promise<HttpOkResponse<ProcessGithubPullRequestEventResponseOkBody>> {
-    const { action, pull_request } = request.body;
+    const { action, pull_request, repository } = request.body;
 
     if (action === 'opened') {
       await this.sendPullRequestCreatedMessageCommandHandler.execute({
         pullRequest: {
           title: pull_request.title,
           number: pull_request.number,
-          url: pull_request.url,
+          url: pull_request.html_url,
           numberOfCommits: pull_request.commits,
           commitsUrl: pull_request.commits_url,
           sourceBranch: pull_request.head.ref,
@@ -120,19 +120,21 @@ export class EventHttpController implements HttpController {
           profileUrl: pull_request.user.html_url,
           avatarUrl: pull_request.user.avatar_url,
         },
+        repositoryName: repository.full_name,
       });
     } else if (action === 'closed' && pull_request.merged) {
       await this.sendPullRequestMergedMessageCommandHandler.execute({
         pullRequest: {
           title: pull_request.title,
           number: pull_request.number,
-          url: pull_request.url,
+          url: pull_request.html_url,
         },
         author: {
           name: pull_request.user.login,
           profileUrl: pull_request.user.html_url,
           avatarUrl: pull_request.user.avatar_url,
         },
+        repositoryName: repository.full_name,
       });
     }
 

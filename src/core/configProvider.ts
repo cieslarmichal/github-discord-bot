@@ -53,8 +53,4 @@ export class ConfigProvider {
   public getDiscordPullRequestsChannelId(): string {
     return this.getStringEnvVariable('DISCORD_PULL_REQUESTS_CHANNEL_ID');
   }
-
-  public getGithubRepositoryName(): string {
-    return this.getStringEnvVariable('GITHUB_REPOSITORY_NAME');
-  }
 }

@@ -7,7 +7,7 @@ export const processGithubIssueEventBodySchema = Type.Object({
   issue: Type.Object({
     title: Type.String(),
     number: Type.Number(),
-    url: Type.String(),
+    html_url: Type.String(),
     labels: Type.Array(
       Type.Object({
         name: Type.String(),

@@ -19,11 +19,9 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
   ) {}
 
   public async execute(payload: SendPullRequestCreatedMessageCommandHandlerPayload): Promise<void> {
-    const { pullRequest, author } = payload;
+    const { pullRequest, author, repositoryName } = payload;
 
     const pullRequestsChannelId = this.configProvider.getDiscordPullRequestsChannelId();
-
-    const repositoryName = this.configProvider.getGithubRepositoryName();
 
     this.loggerService.debug({
       message: 'Sending message about created pull request...',

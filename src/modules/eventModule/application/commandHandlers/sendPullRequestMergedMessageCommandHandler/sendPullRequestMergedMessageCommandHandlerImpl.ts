@@ -19,11 +19,9 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
   ) {}
 
   public async execute(payload: SendPullRequestMergedMessageCommandHandlerPayload): Promise<void> {
-    const { pullRequest, author } = payload;
+    const { pullRequest, author, repositoryName } = payload;
 
     const pullRequestsChannelId = this.configProvider.getDiscordPullRequestsChannelId();
-
-    const repositoryName = this.configProvider.getGithubRepositoryName();
 
     this.loggerService.debug({
       message: 'Sending message about merged pull request...',

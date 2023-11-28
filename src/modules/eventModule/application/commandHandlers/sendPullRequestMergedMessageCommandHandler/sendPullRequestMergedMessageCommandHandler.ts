@@ -11,6 +11,7 @@ export interface SendPullRequestMergedMessageCommandHandlerPayload {
     readonly profileUrl: string;
     readonly avatarUrl: string;
   };
+  readonly repositoryName: string;
 }
 
 export type SendPullRequestMergedMessageCommandHandler = CommandHandler<
