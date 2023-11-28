@@ -51,7 +51,7 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
     if (numberOfUserPullRequests === 1) {
       messageDescription = `${creator.name} merged his first pull request!`;
     } else {
-      messageDescription = `${creator.name} merged his ${numberOfUserPullRequests} pull requests.`;
+      messageDescription = `${creator.name} merged his ${numberOfUserPullRequests} pull request.`;
     }
 
     const embedMessageDraft: SendEmbedMessagePayload = {
