@@ -32,8 +32,6 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
       },
     });
 
-    const issueLabel = issue.labels[0];
-
     const messageColor = '#00CD2D';
 
     const messageTitle = `#${issue.number}: ${issue.title}`;
@@ -52,12 +50,16 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
       channelId: issuesChannelId,
     };
 
-    if (issueLabel) {
+    if (issue.labels.length) {
+      const labelNames = issue.labels.map((label) => label.name).join(', ');
+
+      const messageDescription = `labels: ${labelNames}`;
+
       embedMessageDraft = {
         ...embedMessageDraft,
         message: {
           ...embedMessageDraft.message,
-          description: issueLabel.name,
+          description: messageDescription,
         },
       };
     }
