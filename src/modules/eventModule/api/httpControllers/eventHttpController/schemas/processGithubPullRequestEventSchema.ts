@@ -11,8 +11,8 @@ export const processGithubPullRequestEventBodySchema = Type.Object({
     commits: Type.Number(),
     commits_url: Type.String(),
     merged: Type.Boolean(),
-    base: Type.Object({ ref: Type.String() }),
-    head: Type.Object({ ref: Type.String() }),
+    base: Type.Object({ label: Type.String() }),
+    head: Type.Object({ label: Type.String() }),
     user: Type.Object({
       avatar_url: Type.String(),
       html_url: Type.String(),

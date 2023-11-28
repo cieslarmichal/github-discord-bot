@@ -112,8 +112,8 @@ export class EventHttpController implements HttpController {
           url: pull_request.html_url,
           numberOfCommits: pull_request.commits,
           commitsUrl: pull_request.commits_url,
-          sourceBranch: pull_request.head.ref,
-          targetBranch: pull_request.base.ref,
+          sourceBranch: pull_request.head.label,
+          targetBranch: pull_request.base.label,
         },
         author: {
           name: pull_request.user.login,
