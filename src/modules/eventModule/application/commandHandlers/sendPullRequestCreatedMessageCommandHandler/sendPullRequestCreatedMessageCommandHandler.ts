@@ -10,7 +10,7 @@ export interface SendPullRequestCreatedMessageCommandHandlerPayload {
     readonly sourceBranch: string;
     readonly targetBranch: string;
   };
-  readonly creator: {
+  readonly author: {
     readonly name: string;
     readonly profileUrl: string;
     readonly avatarUrl: string;

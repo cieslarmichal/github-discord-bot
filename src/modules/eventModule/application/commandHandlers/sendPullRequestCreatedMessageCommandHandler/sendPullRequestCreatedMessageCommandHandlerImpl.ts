@@ -19,7 +19,7 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
   ) {}
 
   public async execute(payload: SendPullRequestCreatedMessageCommandHandlerPayload): Promise<void> {
-    const { pullRequest, creator } = payload;
+    const { pullRequest, author } = payload;
 
     const pullRequestsChannelId = this.configProvider.getDiscordPullRequestsChannelId();
 
@@ -31,7 +31,7 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
         source: SendPullRequestCreatedMessageCommandHandlerImpl.name,
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
-        creatorName: creator.name,
+        authorName: author.name,
         pullRequestsChannelId,
       },
     });
@@ -42,7 +42,7 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
 
     const commitsForm = pullRequest.numberOfCommits === 1 ? 'commit' : 'commits';
 
-    const messageDescription = `${creator.name} wants to merge ${pullRequest.numberOfCommits} ${commitsForm} into ${pullRequest.targetBranch} from ${pullRequest.sourceBranch}`;
+    const messageDescription = `${author.name} wants to merge ${pullRequest.numberOfCommits} ${commitsForm} into ${pullRequest.targetBranch} from ${pullRequest.sourceBranch}`;
 
     const commits = await this.githubService.getPullRequestCommits({
       repositoryName,
@@ -60,10 +60,10 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
         url: pullRequest.url,
         title: messageTitle,
         author: {
-          name: creator.name,
-          url: creator.profileUrl,
+          name: author.name,
+          url: author.profileUrl,
         },
-        thumbnail: creator.avatarUrl,
+        thumbnail: author.avatarUrl,
         description: messageDescription,
         customFields,
       },
@@ -78,7 +78,7 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
         source: SendPullRequestCreatedMessageCommandHandlerImpl.name,
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
-        creatorName: creator.name,
+        authorName: author.name,
         pullRequestsChannelId,
       },
     });

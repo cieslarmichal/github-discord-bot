@@ -6,7 +6,7 @@ export interface SendPullRequestMergedMessageCommandHandlerPayload {
     readonly number: number;
     readonly url: string;
   };
-  readonly creator: {
+  readonly author: {
     readonly name: string;
     readonly profileUrl: string;
     readonly avatarUrl: string;

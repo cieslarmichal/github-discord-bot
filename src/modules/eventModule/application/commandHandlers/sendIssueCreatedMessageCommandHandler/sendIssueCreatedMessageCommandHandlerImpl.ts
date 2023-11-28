@@ -17,7 +17,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
   ) {}
 
   public async execute(payload: SendIssueCreatedMessageCommandHandlerPayload): Promise<void> {
-    const { issue, creator } = payload;
+    const { issue, author } = payload;
 
     const issuesChannelId = this.configProvider.getDiscordIssuesChannelId();
 
@@ -27,7 +27,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
         source: SendIssueCreatedMessageCommandHandlerImpl.name,
         issueTitle: issue.title,
         issueUrl: issue.url,
-        creatorName: creator.name,
+        authorName: author.name,
         issuesChannelId,
       },
     });
@@ -42,10 +42,10 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
         url: issue.url,
         title: messageTitle,
         author: {
-          name: creator.name,
-          url: creator.profileUrl,
+          name: author.name,
+          url: author.profileUrl,
         },
-        thumbnail: creator.avatarUrl,
+        thumbnail: author.avatarUrl,
       },
       channelId: issuesChannelId,
     };
@@ -72,7 +72,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
         source: SendIssueCreatedMessageCommandHandlerImpl.name,
         issueTitle: issue.title,
         issueUrl: issue.url,
-        creatorName: creator.name,
+        authorName: author.name,
         issuesChannelId,
       },
     });

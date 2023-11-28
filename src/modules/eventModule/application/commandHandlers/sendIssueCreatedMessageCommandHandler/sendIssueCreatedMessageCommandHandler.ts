@@ -7,7 +7,7 @@ export interface SendIssueCreatedMessageCommandHandlerPayload {
     readonly url: string;
     readonly labels: { name: string }[];
   };
-  readonly creator: {
+  readonly author: {
     readonly name: string;
     readonly profileUrl: string;
     readonly avatarUrl: string;

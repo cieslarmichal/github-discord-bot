@@ -85,7 +85,7 @@ export class EventHttpController implements HttpController {
           url: issue.url,
           labels: issue.labels,
         },
-        creator: {
+        author: {
           name: sender.login,
           profileUrl: sender.html_url,
           avatarUrl: sender.avatar_url,
@@ -115,7 +115,7 @@ export class EventHttpController implements HttpController {
           sourceBranch: pull_request.head.ref,
           targetBranch: pull_request.base.ref,
         },
-        creator: {
+        author: {
           name: pull_request.user.login,
           profileUrl: pull_request.user.html_url,
           avatarUrl: pull_request.user.avatar_url,
@@ -128,7 +128,7 @@ export class EventHttpController implements HttpController {
           number: pull_request.number,
           url: pull_request.url,
         },
-        creator: {
+        author: {
           name: pull_request.user.login,
           profileUrl: pull_request.user.html_url,
           avatarUrl: pull_request.user.avatar_url,

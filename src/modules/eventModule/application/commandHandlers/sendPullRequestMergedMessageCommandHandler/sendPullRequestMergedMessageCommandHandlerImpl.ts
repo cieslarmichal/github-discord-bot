@@ -19,7 +19,7 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
   ) {}
 
   public async execute(payload: SendPullRequestMergedMessageCommandHandlerPayload): Promise<void> {
-    const { pullRequest, creator } = payload;
+    const { pullRequest, author } = payload;
 
     const pullRequestsChannelId = this.configProvider.getDiscordPullRequestsChannelId();
 
@@ -31,7 +31,7 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
         source: SendPullRequestMergedMessageCommandHandlerImpl.name,
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
-        creatorName: creator.name,
+        authorName: author.name,
         pullRequestsChannelId,
         repositoryName,
       },
@@ -43,15 +43,15 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
 
     const numberOfUserPullRequests = await this.githubService.getNumberOfPullRequestsByAuthor({
       repositoryName,
-      author: creator.name,
+      author: author.name,
     });
 
     let messageDescription;
 
     if (numberOfUserPullRequests === 1) {
-      messageDescription = `${creator.name} merged his first pull request!`;
+      messageDescription = `${author.name} merged his first pull request!`;
     } else {
-      messageDescription = `${creator.name} merged his ${numberOfUserPullRequests} pull request.`;
+      messageDescription = `${author.name} merged his ${numberOfUserPullRequests} pull request.`;
     }
 
     const embedMessageDraft: SendEmbedMessagePayload = {
@@ -60,10 +60,10 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
         url: pullRequest.url,
         title: messageTitle,
         author: {
-          name: creator.name,
-          url: creator.profileUrl,
+          name: author.name,
+          url: author.profileUrl,
         },
-        thumbnail: creator.avatarUrl,
+        thumbnail: author.avatarUrl,
         description: messageDescription,
       },
       channelId: pullRequestsChannelId,
@@ -77,7 +77,7 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
         source: SendPullRequestMergedMessageCommandHandlerImpl.name,
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
-        creatorName: creator.name,
+        authorName: author.name,
         pullRequestsChannelId,
         repositoryName,
       },
