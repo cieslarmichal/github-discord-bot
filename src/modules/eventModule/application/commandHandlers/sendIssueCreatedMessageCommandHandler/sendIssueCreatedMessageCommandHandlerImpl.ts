@@ -53,7 +53,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
     if (issue.labels.length) {
       const labelNames = issue.labels.map((label) => label.name).join(', ');
 
-      const messageDescription = `labels: ${labelNames}`;
+      const messageDescription = `${labelNames}`;
 
       embedMessageDraft = {
         ...embedMessageDraft,
