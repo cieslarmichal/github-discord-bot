@@ -57,8 +57,4 @@ export class ConfigProvider {
   public getDiscordStarsChannelId(): string {
     return this.getStringEnvVariable('DISCORD_STARS_CHANNEL_ID');
   }
-
-  public getDiscordForksChannelId(): string {
-    return this.getStringEnvVariable('DISCORD_FORKS_CHANNEL_ID');
-  }
 }
