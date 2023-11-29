@@ -1,3 +1,5 @@
+import { REST, Routes } from 'discord.js';
+
 import { ConfigProvider } from './configProvider.js';
 import { HttpServer } from './httpServer/httpServer.js';
 import { symbols } from './symbols.js';
@@ -65,6 +67,10 @@ export class Application {
 
     const serverPort = configProvider.getServerPort();
 
+    const discordServerId = configProvider.getDiscordServerId();
+
+    const discordClientId = configProvider.getDiscordClientId();
+
     const server = new HttpServer(container);
 
     await server.start({
@@ -108,5 +114,26 @@ export class Application {
 
     // TODO: add discord service method
     await discordClient.login(discordToken);
+
+    const commands = [
+      {
+        name: 'random',
+        description: 'Issue #242',
+      },
+    ];
+
+    const rest = new REST({ version: '10' }).setToken(discordToken);
+
+    try {
+      console.log('Registering slash commands...');
+
+      await rest.put(Routes.applicationGuildCommands(discordClientId, discordServerId), {
+        body: commands,
+      });
+
+      console.log('Slash commands were registered successfully!');
+    } catch (error) {
+      console.log(`There was an error: ${error}`);
+    }
   }
 }
