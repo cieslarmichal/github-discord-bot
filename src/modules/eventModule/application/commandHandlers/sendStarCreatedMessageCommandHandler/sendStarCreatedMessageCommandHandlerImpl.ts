@@ -21,7 +21,7 @@ export class SendStarCreatedMessageCommandHandlerImpl implements SendStarCreated
   public async execute(payload: SendStarCreatedMessageCommandHandlerPayload): Promise<void> {
     const { stargazer, repository } = payload;
 
-    const starsChannelId = this.configProvider.getDiscordIssuesChannelId();
+    const starsChannelId = this.configProvider.getDiscordStarsChannelId();
 
     this.loggerService.debug({
       message: 'Sending message about created star...',
