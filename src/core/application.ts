@@ -112,6 +112,24 @@ export class Application {
       });
     });
 
+    discordClient.on('interactionCreate', async (interaction) => {
+      if (!interaction.isChatInputCommand()) {
+        return;
+      }
+
+      loggerService.debug({
+        message: 'Processing chat command...',
+        context: {
+          command: interaction.commandName,
+          user: interaction.user.username,
+        },
+      });
+
+      if (interaction.commandName === 'random') {
+        interaction.reply('#324 Create person bio functionality');
+      }
+    });
+
     // TODO: add discord service method
     await discordClient.login(discordToken);
 
