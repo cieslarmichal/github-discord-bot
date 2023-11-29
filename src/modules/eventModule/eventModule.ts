@@ -5,6 +5,8 @@ import { type SendPullRequestCreatedMessageCommandHandler } from './application/
 import { SendPullRequestCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendPullRequestCreatedMessageCommandHandlerImpl.js';
 import { type SendPullRequestMergedMessageCommandHandler } from './application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandler.js';
 import { SendPullRequestMergedMessageCommandHandlerImpl } from './application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandlerImpl.js';
+import { type SendStarCreatedMessageCommandHandler } from './application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandler.js';
+import { SendStarCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandlerImpl.js';
 import { type EventModuleConfigProvider } from './eventModuleConfigProvider.js';
 import { symbols } from './symbols.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
@@ -53,6 +55,16 @@ export class EventModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<SendStarCreatedMessageCommandHandler>(
+      symbols.sendStarCreatedMessageCommandHandler,
+      () =>
+        new SendStarCreatedMessageCommandHandlerImpl(
+          container.get<DiscordService>(coreSymbols.discordService),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),
+        ),
+    );
+
     container.bind<EventHttpController>(
       symbols.eventHttpController,
       () =>
@@ -62,6 +74,7 @@ export class EventModule implements DependencyInjectionModule {
             symbols.sendPullRequestCreatedMessageCommandHandler,
           ),
           container.get<SendPullRequestMergedMessageCommandHandler>(symbols.sendPullRequestMergedMessageCommandHandler),
+          container.get<SendStarCreatedMessageCommandHandler>(symbols.sendStarCreatedMessageCommandHandler),
         ),
     );
   }

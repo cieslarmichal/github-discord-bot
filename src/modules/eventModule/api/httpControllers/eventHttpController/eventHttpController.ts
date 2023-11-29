@@ -12,6 +12,12 @@ import {
   processGithubPullRequestEventBodySchema,
   processGithubPullRequestEventResponseOkBodySchema,
 } from './schemas/processGithubPullRequestEventSchema.js';
+import {
+  processGithubStarEventBodySchema,
+  processGithubStarEventResponseOkBodySchema,
+  type ProcessGithubStarEventBody,
+  type ProcessGithubStarEventResponseOkBody,
+} from './schemas/processGithubStarEventSchema.js';
 import { type HttpController } from '../../../../../common/types/http/httpController.js';
 import { HttpMethodName } from '../../../../../common/types/http/httpMethodName.js';
 import { type HttpRequest } from '../../../../../common/types/http/httpRequest.js';
@@ -21,6 +27,7 @@ import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.
 import { type SendIssueCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { type SendPullRequestCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendPullRequestCreatedMessageCommandHandler.js';
 import { type SendPullRequestMergedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandler.js';
+import { type SendStarCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandler.js';
 
 export class EventHttpController implements HttpController {
   public readonly basePath = '/events/github';
@@ -29,6 +36,7 @@ export class EventHttpController implements HttpController {
     private readonly sendIssueCreatedMessageCommandHandler: SendIssueCreatedMessageCommandHandler,
     private readonly sendPullRequestCreatedMessageCommandHandler: SendPullRequestCreatedMessageCommandHandler,
     private readonly sendPullRequestMergedMessageCommandHandler: SendPullRequestMergedMessageCommandHandler,
+    private readonly sendStarCreatedMessageCommandHandler: SendStarCreatedMessageCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -68,6 +76,24 @@ export class EventHttpController implements HttpController {
         },
         tags: ['Pull Request', 'Github', 'Webhook'],
         description: 'Process github pull request event.',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: '/stars',
+        handler: this.processGithubStarEvent.bind(this),
+        schema: {
+          request: {
+            body: processGithubStarEventBodySchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: processGithubStarEventResponseOkBodySchema,
+              description: 'Star event processed.',
+            },
+          },
+        },
+        tags: ['Star', 'Github', 'Webhook'],
+        description: 'Process github star event.',
       }),
     ];
   }
@@ -135,6 +161,31 @@ export class EventHttpController implements HttpController {
           avatarUrl: pull_request.user.avatar_url,
         },
         repositoryName: repository.full_name,
+      });
+    }
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
+  }
+
+  private async processGithubStarEvent(
+    request: HttpRequest<ProcessGithubStarEventBody>,
+  ): Promise<HttpOkResponse<ProcessGithubStarEventResponseOkBody>> {
+    const { action, repository, sender } = request.body;
+
+    if (action === 'created') {
+      await this.sendStarCreatedMessageCommandHandler.execute({
+        stargazer: {
+          name: sender.login,
+          profileUrl: sender.html_url,
+          avatarUrl: sender.avatar_url,
+        },
+        repository: {
+          name: repository.full_name,
+          totalStars: repository.stargazers_count,
+        },
       });
     }
 
