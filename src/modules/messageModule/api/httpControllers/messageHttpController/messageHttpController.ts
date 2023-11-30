@@ -29,7 +29,7 @@ import { type SendPullRequestCreatedMessageCommandHandler } from '../../../appli
 import { type SendPullRequestMergedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandler.js';
 import { type SendStarCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandler.js';
 
-export class EventHttpController implements HttpController {
+export class MessageHttpController implements HttpController {
   public readonly basePath = '/events/github';
 
   public constructor(

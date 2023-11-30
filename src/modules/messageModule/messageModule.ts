@@ -1,4 +1,4 @@
-import { EventHttpController } from './api/httpControllers/eventHttpController/eventHttpController.js';
+import { MessageHttpController } from './api/httpControllers/messageHttpController/messageHttpController.js';
 import { type SendIssueCreatedMessageCommandHandler } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { SendIssueCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
 import { type SendPullRequestCreatedMessageCommandHandler } from './application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendPullRequestCreatedMessageCommandHandler.js';
@@ -7,7 +7,7 @@ import { type SendPullRequestMergedMessageCommandHandler } from './application/c
 import { SendPullRequestMergedMessageCommandHandlerImpl } from './application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandlerImpl.js';
 import { type SendStarCreatedMessageCommandHandler } from './application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandler.js';
 import { SendStarCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandlerImpl.js';
-import { type EventModuleConfigProvider } from './eventModuleConfigProvider.js';
+import { type MessageModuleConfigProvider } from './messageModuleConfigProvider.js';
 import { symbols } from './symbols.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
 import { coreSymbols } from '../../core/symbols.js';
@@ -17,9 +17,9 @@ import { type DiscordService } from '../../libs/discord/services/discordService/
 import { type GithubService } from '../../libs/github/services/githubService/githubService.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 
-export class EventModule implements DependencyInjectionModule {
+export class MessageModule implements DependencyInjectionModule {
   public declareBindings(container: DependencyInjectionContainer): void {
-    container.bind<EventModuleConfigProvider>(symbols.eventModuleConfigProvider, () =>
+    container.bind<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider, () =>
       container.get<ConfigProvider>(coreSymbols.configProvider),
     );
 
@@ -29,7 +29,7 @@ export class EventModule implements DependencyInjectionModule {
         new SendIssueCreatedMessageCommandHandlerImpl(
           container.get<DiscordService>(coreSymbols.discordService),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),
+          container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
         ),
     );
 
@@ -39,7 +39,7 @@ export class EventModule implements DependencyInjectionModule {
         new SendPullRequestCreatedMessageCommandHandlerImpl(
           container.get<DiscordService>(coreSymbols.discordService),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),
+          container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
           container.get<GithubService>(coreSymbols.githubService),
         ),
     );
@@ -50,7 +50,7 @@ export class EventModule implements DependencyInjectionModule {
         new SendPullRequestMergedMessageCommandHandlerImpl(
           container.get<DiscordService>(coreSymbols.discordService),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),
+          container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
           container.get<GithubService>(coreSymbols.githubService),
         ),
     );
@@ -61,14 +61,14 @@ export class EventModule implements DependencyInjectionModule {
         new SendStarCreatedMessageCommandHandlerImpl(
           container.get<DiscordService>(coreSymbols.discordService),
           container.get<LoggerService>(coreSymbols.loggerService),
-          container.get<EventModuleConfigProvider>(symbols.eventModuleConfigProvider),
+          container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
         ),
     );
 
-    container.bind<EventHttpController>(
-      symbols.eventHttpController,
+    container.bind<MessageHttpController>(
+      symbols.messageHttpController,
       () =>
-        new EventHttpController(
+        new MessageHttpController(
           container.get<SendIssueCreatedMessageCommandHandler>(symbols.sendIssueCreatedMessageCommandHandler),
           container.get<SendPullRequestCreatedMessageCommandHandler>(
             symbols.sendPullRequestCreatedMessageCommandHandler,

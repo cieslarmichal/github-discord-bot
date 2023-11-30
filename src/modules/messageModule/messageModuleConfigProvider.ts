@@ -1,4 +1,4 @@
-export interface EventModuleConfigProvider {
+export interface MessageModuleConfigProvider {
   getDiscordIssuesChannelId(): string;
   getDiscordPullRequestsChannelId(): string;
   getDiscordStarsChannelId(): string;

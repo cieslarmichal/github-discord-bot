@@ -7,7 +7,7 @@ import {
   type DiscordService,
 } from '../../../../../libs/discord/services/discordService/discordService.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
-import { type EventModuleConfigProvider } from '../../../eventModuleConfigProvider.js';
+import { type MessageModuleConfigProvider } from '../../../messageModuleConfigProvider.js';
 
 export class SendStarCreatedMessageCommandHandlerImpl implements SendStarCreatedMessageCommandHandler {
   private readonly githubBaseUrl = 'https://github.com';
@@ -15,7 +15,7 @@ export class SendStarCreatedMessageCommandHandlerImpl implements SendStarCreated
   public constructor(
     private readonly discordService: DiscordService,
     private readonly loggerService: LoggerService,
-    private readonly configProvider: EventModuleConfigProvider,
+    private readonly configProvider: MessageModuleConfigProvider,
   ) {}
 
   public async execute(payload: SendStarCreatedMessageCommandHandlerPayload): Promise<void> {

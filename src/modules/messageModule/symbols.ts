@@ -1,13 +1,13 @@
 export const symbols = {
-  eventModuleConfigProvider: Symbol('eventModuleConfigProvider'),
+  messageModuleConfigProvider: Symbol('messageModuleConfigProvider'),
   sendIssueCreatedMessageCommandHandler: Symbol('sendIssueCreatedMessageCommandHandler'),
   sendPullRequestCreatedMessageCommandHandler: Symbol('sendPullRequestCreatedMessageCommandHandler'),
   sendPullRequestMergedMessageCommandHandler: Symbol('sendPullRequestMergedMessageCommandHandler'),
   sendStarCreatedMessageCommandHandler: Symbol('sendStarCreatedMessageCommandHandler'),
   githubService: Symbol('githubService'),
-  eventHttpController: Symbol('eventHttpController'),
+  messageHttpController: Symbol('messageHttpController'),
 };
 
-export const eventSymbols = {
-  eventHttpController: symbols.eventHttpController,
+export const messageSymbols = {
+  messageHttpController: symbols.messageHttpController,
 };

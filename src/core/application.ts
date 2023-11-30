@@ -16,13 +16,13 @@ import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFac
 import { type HttpService } from '../libs/httpService/services/httpService/httpService.js';
 import { LoggerServiceFactory } from '../libs/logger/factories/loggerServiceFactory/loggerServiceFactory.js';
 import { type LoggerService } from '../libs/logger/services/loggerService/loggerService.js';
-import { EventModule } from '../modules/eventModule/eventModule.js';
+import { MessageModule } from '../modules/messageModule/messageModule.js';
 
 export class Application {
   public static createContainer(): DependencyInjectionContainer {
     const configProvider = new ConfigProvider();
 
-    const modules: DependencyInjectionModule[] = [new EventModule()];
+    const modules: DependencyInjectionModule[] = [new MessageModule()];
 
     const container = DependencyInjectionContainerFactory.create({ modules });
 

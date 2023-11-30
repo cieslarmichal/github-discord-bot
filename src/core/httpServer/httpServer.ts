@@ -9,8 +9,8 @@ import { type HttpController } from '../../common/types/http/httpController.js';
 import { HttpStatusCode } from '../../common/types/http/httpStatusCode.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
-import { type EventHttpController } from '../../modules/eventModule/api/httpControllers/eventHttpController/eventHttpController.js';
-import { eventSymbols } from '../../modules/eventModule/symbols.js';
+import { type MessageHttpController } from '../../modules/messageModule/api/httpControllers/messageHttpController/messageHttpController.js';
+import { messageSymbols } from '../../modules/messageModule/symbols.js';
 import { HttpRouter } from '../httpRouter/httpRouter.js';
 import { coreSymbols } from '../symbols.js';
 
@@ -36,7 +36,7 @@ export class HttpServer {
   }
 
   private getControllers(): HttpController[] {
-    return [this.container.get<EventHttpController>(eventSymbols.eventHttpController)];
+    return [this.container.get<MessageHttpController>(messageSymbols.messageHttpController)];
   }
 
   public async start(payload: StartPayload): Promise<void> {
