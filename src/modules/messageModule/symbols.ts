@@ -8,9 +8,15 @@ export const symbols = {
   githubService: Symbol('githubService'),
   messageHttpController: Symbol('messageHttpController'),
   guildMemberDiscordEventController: Symbol('guildMemberDiscordEventController'),
+  interactionDiscordEventController: Symbol('interactionDiscordEventController'),
+  discordSlashCommandsRegistry: Symbol('discordSlashCommandsRegistry'),
+  randomIssueDiscordSlashCommand: Symbol('randomIssueDiscordSlashCommand'),
 };
 
 export const messageSymbols = {
   messageHttpController: symbols.messageHttpController,
   guildMemberDiscordEventController: symbols.guildMemberDiscordEventController,
+  interactionDiscordEventController: symbols.interactionDiscordEventController,
+  discordSlashCommandsRegistry: symbols.discordSlashCommandsRegistry,
+  randomIssueDiscordSlashCommand: symbols.randomIssueDiscordSlashCommand,
 };

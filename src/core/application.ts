@@ -52,15 +52,15 @@ export class Application {
 
     const configProvider = container.get<ConfigProvider>(symbols.configProvider);
 
-    const discordToken = configProvider.getDiscordToken();
-
     const serverHost = configProvider.getServerHost();
 
     const serverPort = configProvider.getServerPort();
 
-    // const discordServerId = configProvider.getDiscordServerId();
+    const discordToken = configProvider.getDiscordToken();
 
-    // const discordClientId = configProvider.getDiscordClientId();
+    const discordClientId = configProvider.getDiscordClientId();
+
+    const discordServerId = configProvider.getDiscordServerId();
 
     const server = new HttpServer(container);
 
@@ -71,6 +71,8 @@ export class Application {
 
     await discordClient.start({
       token: discordToken,
+      clientId: discordClientId,
+      serverId: discordServerId,
     });
 
     loggerService.log({
@@ -79,61 +81,5 @@ export class Application {
         source: Application.name,
       },
     });
-
-    //   discordClient.on('interactionCreate', async (interaction) => {
-    //     if (!interaction.isChatInputCommand()) {
-    //       return;
-    //     }
-
-    //     loggerService.debug({
-    //       message: 'Processing chat command...',
-    //       context: {
-    //         command: interaction.commandName,
-    //         user: interaction.user.username,
-    //       },
-    //     });
-
-    //     if (interaction.commandName === 'random') {
-    //       interaction.reply('#324 Create person bio functionality');
-    //     }
-    //   });
-
-    //   const commands = [
-    //     new SlashCommandBuilder()
-    //       .setName('random-issue')
-    //       .setDescription('Get random issue.')
-    //       .addStringOption((option) =>
-    //         option.setName('level').setDescription('The issue level.').setRequired(true).addChoices(
-    //           {
-    //             name: 'easy',
-    //             value: 'easy',
-    //           },
-    //           {
-    //             name: 'medium',
-    //             value: 'medium',
-    //           },
-    //           {
-    //             name: 'hard',
-    //             value: 'hard',
-    //           },
-    //         ),
-    //       )
-    //       .toJSON(),
-    //   ];
-
-    //   const rest = new REST({ version: '10' }).setToken(discordToken);
-
-    //   try {
-    //     console.log('Registering slash commands...');
-
-    //     await rest.put(Routes.applicationGuildCommands(discordClientId, discordServerId), {
-    //       body: commands,
-    //     });
-
-    //     console.log('Slash commands were registered successfully!');
-    //   } catch (error) {
-    //     console.log(`There was an error: ${error}`);
-    //   }
-    // }
   }
 }

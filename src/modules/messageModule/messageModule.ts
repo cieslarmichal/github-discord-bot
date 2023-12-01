@@ -1,4 +1,8 @@
 import { GuildMemberDiscordEventController } from './api/discordEventControllers/guildMemberDiscordEventController/guildMemberDiscordEventController.js';
+import { InteractionDiscordEventController } from './api/discordEventControllers/interactionDiscordEventController/interactionDiscordEventController.js';
+import { RandomIssueDiscordSlashCommand } from './api/discordSlashCommands/randomIssueDiscordSlashCommand/randomIssueDiscordSlashCommand.js';
+import { type DiscordSlashCommandsRegistry } from './api/discordSlashCommandsRegistry/discordSlashCommandsRegistry.js';
+import { DiscordSlashCommandsRegistryImpl } from './api/discordSlashCommandsRegistry/discordSlashCommandsRegistryImpl.js';
 import { MessageHttpController } from './api/httpControllers/messageHttpController/messageHttpController.js';
 import { type SendIssueCreatedMessageCommandHandler } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { SendIssueCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
@@ -97,6 +101,24 @@ export class MessageModule implements DependencyInjectionModule {
         new GuildMemberDiscordEventController(
           container.get<SendWelcomeMessageCommandHandler>(symbols.sendWelcomeMessageCommandHandler),
         ),
+    );
+
+    container.bind<DiscordSlashCommandsRegistry>(
+      symbols.discordSlashCommandsRegistry,
+      () => new DiscordSlashCommandsRegistryImpl(),
+    );
+
+    container.bind<InteractionDiscordEventController>(
+      symbols.interactionDiscordEventController,
+      () =>
+        new InteractionDiscordEventController(
+          container.get<DiscordSlashCommandsRegistry>(symbols.discordSlashCommandsRegistry),
+        ),
+    );
+
+    container.bind<RandomIssueDiscordSlashCommand>(
+      symbols.randomIssueDiscordSlashCommand,
+      () => new RandomIssueDiscordSlashCommand(),
     );
   }
 }

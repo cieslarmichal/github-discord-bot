@@ -1,4 +1,4 @@
-import { Client, EmbedBuilder, GatewayIntentBits, type HexColorString } from 'discord.js';
+import { Client, EmbedBuilder, GatewayIntentBits, REST, type HexColorString, Routes } from 'discord.js';
 
 import {
   type SendTextMessagePayload,
@@ -9,18 +9,23 @@ import {
 import { OperationNotValidError } from '../../common/errors/operationNotValidError.js';
 import { ResourceNotFoundError } from '../../common/errors/resourceNotFoundError.js';
 import { type DiscordEventController } from '../../common/types/discord/discordEventController.js';
+import { type SlashCommand } from '../../common/types/discord/slashCommand.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 import { type GuildMemberDiscordEventController } from '../../modules/messageModule/api/discordEventControllers/guildMemberDiscordEventController/guildMemberDiscordEventController.js';
+import { type InteractionDiscordEventController } from '../../modules/messageModule/api/discordEventControllers/interactionDiscordEventController/interactionDiscordEventController.js';
+import { type RandomIssueDiscordSlashCommand } from '../../modules/messageModule/api/discordSlashCommands/randomIssueDiscordSlashCommand/randomIssueDiscordSlashCommand.js';
+import { type DiscordSlashCommandsRegistry } from '../../modules/messageModule/api/discordSlashCommandsRegistry/discordSlashCommandsRegistry.js';
 import { messageSymbols } from '../../modules/messageModule/symbols.js';
 import { DiscordRouter } from '../discordRouter/discordRouter.js';
 import { coreSymbols } from '../symbols.js';
 
 export class DiscordClientImpl implements DiscordClient {
   public readonly discordClientInstance: Client;
-  private readonly discordRouter: DiscordRouter;
   private readonly container: DependencyInjectionContainer;
   private readonly loggerService: LoggerService;
+  private readonly discordRouter: DiscordRouter;
+  private readonly discordSlashCommandsRegistry: DiscordSlashCommandsRegistry;
 
   public constructor(container: DependencyInjectionContainer) {
     this.discordClientInstance = new Client({
@@ -37,10 +42,14 @@ export class DiscordClientImpl implements DiscordClient {
     this.loggerService = this.container.get<LoggerService>(coreSymbols.loggerService);
 
     this.discordRouter = new DiscordRouter(this.discordClientInstance, container);
+
+    this.discordSlashCommandsRegistry = this.container.get<DiscordSlashCommandsRegistry>(
+      messageSymbols.discordSlashCommandsRegistry,
+    );
   }
 
   public async start(payload: StartPayload): Promise<void> {
-    const { token } = payload;
+    const { token, clientId, serverId } = payload;
 
     this.discordRouter.registerControllers({
       controllers: this.getControllers(),
@@ -57,10 +66,33 @@ export class DiscordClientImpl implements DiscordClient {
     });
 
     await this.discordClientInstance.login(token);
+
+    const slashCommands = this.getSlashCommands();
+
+    slashCommands.forEach((slashCommand) => {
+      this.discordSlashCommandsRegistry.registerSlashCommand({
+        slashCommand,
+      });
+    });
+
+    const commandsBody = slashCommands.map((slashCommand) => slashCommand.slashCommandBuilder.toJSON());
+
+    const rest = new REST({ version: '10' }).setToken(token);
+
+    await rest.put(Routes.applicationGuildCommands(clientId, serverId), {
+      body: commandsBody,
+    });
   }
 
   private getControllers(): DiscordEventController[] {
-    return [this.container.get<GuildMemberDiscordEventController>(messageSymbols.guildMemberDiscordEventController)];
+    return [
+      this.container.get<GuildMemberDiscordEventController>(messageSymbols.guildMemberDiscordEventController),
+      this.container.get<InteractionDiscordEventController>(messageSymbols.interactionDiscordEventController),
+    ];
+  }
+
+  private getSlashCommands(): SlashCommand[] {
+    return [this.container.get<RandomIssueDiscordSlashCommand>(messageSymbols.randomIssueDiscordSlashCommand)];
   }
 
   public async sendTextMessage(payload: SendTextMessagePayload): Promise<void> {

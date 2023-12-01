@@ -1,5 +1,7 @@
 export interface StartPayload {
   readonly token: string;
+  readonly clientId: string;
+  readonly serverId: string;
 }
 
 export interface SendTextMessagePayload {
