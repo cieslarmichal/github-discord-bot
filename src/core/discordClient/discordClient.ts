@@ -1,3 +1,7 @@
+export interface StartPayload {
+  readonly token: string;
+}
+
 export interface SendTextMessagePayload {
   readonly message: string;
   readonly channelId: string;
@@ -19,7 +23,8 @@ export interface SendEmbedMessagePayload {
   readonly channelId: string;
 }
 
-export interface DiscordService {
+export interface DiscordClient {
+  start(payload: StartPayload): Promise<void>;
   sendTextMessage(payload: SendTextMessagePayload): Promise<void>;
   sendEmbedMessage(payload: SendEmbedMessagePayload): Promise<void>;
 }

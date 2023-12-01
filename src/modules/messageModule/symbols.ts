@@ -6,8 +6,10 @@ export const symbols = {
   sendStarCreatedMessageCommandHandler: Symbol('sendStarCreatedMessageCommandHandler'),
   githubService: Symbol('githubService'),
   messageHttpController: Symbol('messageHttpController'),
+  guildMemberDiscordEventController: Symbol('guildMemberDiscordEventController'),
 };
 
 export const messageSymbols = {
   messageHttpController: symbols.messageHttpController,
+  guildMemberDiscordEventController: symbols.guildMemberDiscordEventController,
 };

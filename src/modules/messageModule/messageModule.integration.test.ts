@@ -1,5 +1,6 @@
 import { beforeEach, expect, describe, it } from 'vitest';
 
+import { GuildMemberDiscordEventController } from './api/discordEventControllers/guildMemberDiscordEventController/guildMemberDiscordEventController.js';
 import { MessageHttpController } from './api/httpControllers/messageHttpController/messageHttpController.js';
 import { messageSymbols } from './symbols.js';
 import { Application } from '../../core/application.js';
@@ -16,5 +17,9 @@ describe('MessageModule', () => {
     expect(container.get<MessageHttpController>(messageSymbols.messageHttpController)).toBeInstanceOf(
       MessageHttpController,
     );
+
+    expect(
+      container.get<GuildMemberDiscordEventController>(messageSymbols.guildMemberDiscordEventController),
+    ).toBeInstanceOf(GuildMemberDiscordEventController);
   });
 });

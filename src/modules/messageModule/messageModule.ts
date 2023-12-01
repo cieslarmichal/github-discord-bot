@@ -1,3 +1,4 @@
+import { GuildMemberDiscordEventController } from './api/discordEventControllers/guildMemberDiscordEventController/guildMemberDiscordEventController.js';
 import { MessageHttpController } from './api/httpControllers/messageHttpController/messageHttpController.js';
 import { type SendIssueCreatedMessageCommandHandler } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { SendIssueCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
@@ -10,10 +11,10 @@ import { SendStarCreatedMessageCommandHandlerImpl } from './application/commandH
 import { type MessageModuleConfigProvider } from './messageModuleConfigProvider.js';
 import { symbols } from './symbols.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
+import { type DiscordClient } from '../../core/discordClient/discordClient.js';
 import { coreSymbols } from '../../core/symbols.js';
 import { type DependencyInjectionContainer } from '../../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { type DependencyInjectionModule } from '../../libs/dependencyInjection/dependencyInjectionModule.js';
-import { type DiscordService } from '../../libs/discord/services/discordService/discordService.js';
 import { type GithubService } from '../../libs/github/services/githubService/githubService.js';
 import { type LoggerService } from '../../libs/logger/services/loggerService/loggerService.js';
 
@@ -27,7 +28,7 @@ export class MessageModule implements DependencyInjectionModule {
       symbols.sendIssueCreatedMessageCommandHandler,
       () =>
         new SendIssueCreatedMessageCommandHandlerImpl(
-          container.get<DiscordService>(coreSymbols.discordService),
+          container.get<DiscordClient>(coreSymbols.discordClient),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
         ),
@@ -37,7 +38,7 @@ export class MessageModule implements DependencyInjectionModule {
       symbols.sendPullRequestCreatedMessageCommandHandler,
       () =>
         new SendPullRequestCreatedMessageCommandHandlerImpl(
-          container.get<DiscordService>(coreSymbols.discordService),
+          container.get<DiscordClient>(coreSymbols.discordClient),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
           container.get<GithubService>(coreSymbols.githubService),
@@ -48,7 +49,7 @@ export class MessageModule implements DependencyInjectionModule {
       symbols.sendPullRequestMergedMessageCommandHandler,
       () =>
         new SendPullRequestMergedMessageCommandHandlerImpl(
-          container.get<DiscordService>(coreSymbols.discordService),
+          container.get<DiscordClient>(coreSymbols.discordClient),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
           container.get<GithubService>(coreSymbols.githubService),
@@ -59,7 +60,7 @@ export class MessageModule implements DependencyInjectionModule {
       symbols.sendStarCreatedMessageCommandHandler,
       () =>
         new SendStarCreatedMessageCommandHandlerImpl(
-          container.get<DiscordService>(coreSymbols.discordService),
+          container.get<DiscordClient>(coreSymbols.discordClient),
           container.get<LoggerService>(coreSymbols.loggerService),
           container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
         ),
@@ -76,6 +77,11 @@ export class MessageModule implements DependencyInjectionModule {
           container.get<SendPullRequestMergedMessageCommandHandler>(symbols.sendPullRequestMergedMessageCommandHandler),
           container.get<SendStarCreatedMessageCommandHandler>(symbols.sendStarCreatedMessageCommandHandler),
         ),
+    );
+
+    container.bind<GuildMemberDiscordEventController>(
+      symbols.guildMemberDiscordEventController,
+      () => new GuildMemberDiscordEventController(container.get<LoggerService>(coreSymbols.loggerService)),
     );
   }
 }

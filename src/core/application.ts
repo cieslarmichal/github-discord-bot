@@ -1,15 +1,11 @@
-import { REST, Routes } from 'discord.js';
-
 import { ConfigProvider } from './configProvider.js';
+import { type DiscordClient } from './discordClient/discordClient.js';
+import { DiscordClientImpl } from './discordClient/discordClientImpl.js';
 import { HttpServer } from './httpServer/httpServer.js';
 import { symbols } from './symbols.js';
 import { type DependencyInjectionContainer } from '../libs/dependencyInjection/dependencyInjectionContainer.js';
 import { DependencyInjectionContainerFactory } from '../libs/dependencyInjection/dependencyInjectionContainerFactory.js';
 import { type DependencyInjectionModule } from '../libs/dependencyInjection/dependencyInjectionModule.js';
-import { type DiscordClient } from '../libs/discord/clients/discordClient/discordClient.js';
-import { DiscordClientFactory } from '../libs/discord/factories/discordClientFactory/discordClientFactory.js';
-import { type DiscordService } from '../libs/discord/services/discordService/discordService.js';
-import { DiscordServiceImpl } from '../libs/discord/services/discordService/discordServiceImpl.js';
 import { GithubServiceFactory } from '../libs/github/factories/githubServiceFactory/githubServiceFactory.js';
 import { type GithubService } from '../libs/github/services/githubService/githubService.js';
 import { HttpServiceFactory } from '../libs/httpService/factories/httpServiceFactory/httpServiceFactory.js';
@@ -34,12 +30,7 @@ export class Application {
       }),
     );
 
-    container.bind<DiscordClient>(symbols.discordClient, () => DiscordClientFactory.create());
-
-    container.bind<DiscordService>(
-      symbols.discordService,
-      () => new DiscordServiceImpl(container.get<DiscordClient>(symbols.discordClient)),
-    );
+    container.bind<DiscordClient>(symbols.discordClient, () => new DiscordClientImpl(container));
 
     container.bind<HttpService>(symbols.httpService, () => HttpServiceFactory.create());
 
@@ -67,15 +58,19 @@ export class Application {
 
     const serverPort = configProvider.getServerPort();
 
-    const discordServerId = configProvider.getDiscordServerId();
+    // const discordServerId = configProvider.getDiscordServerId();
 
-    const discordClientId = configProvider.getDiscordClientId();
+    // const discordClientId = configProvider.getDiscordClientId();
 
     const server = new HttpServer(container);
 
     await server.start({
       host: serverHost,
       port: serverPort,
+    });
+
+    await discordClient.start({
+      token: discordToken,
     });
 
     loggerService.log({
@@ -85,73 +80,60 @@ export class Application {
       },
     });
 
-    discordClient.on('guildMemberAdd', async (member) => {
-      loggerService.debug({
-        message: 'New user joined the server.',
-        context: { user: member.user.username },
-      });
+    //   discordClient.on('interactionCreate', async (interaction) => {
+    //     if (!interaction.isChatInputCommand()) {
+    //       return;
+    //     }
 
-      const welcomeChannelName = 'welcome';
+    //     loggerService.debug({
+    //       message: 'Processing chat command...',
+    //       context: {
+    //         command: interaction.commandName,
+    //         user: interaction.user.username,
+    //       },
+    //     });
 
-      const welcomeChannel = member.guild.channels.cache.find((channel) => channel.name === welcomeChannelName);
+    //     if (interaction.commandName === 'random') {
+    //       interaction.reply('#324 Create person bio functionality');
+    //     }
+    //   });
 
-      if (!welcomeChannel) {
-        throw new Error('Welcome channel not found.');
-      }
+    //   const commands = [
+    //     new SlashCommandBuilder()
+    //       .setName('random-issue')
+    //       .setDescription('Get random issue.')
+    //       .addStringOption((option) =>
+    //         option.setName('level').setDescription('The issue level.').setRequired(true).addChoices(
+    //           {
+    //             name: 'easy',
+    //             value: 'easy',
+    //           },
+    //           {
+    //             name: 'medium',
+    //             value: 'medium',
+    //           },
+    //           {
+    //             name: 'hard',
+    //             value: 'hard',
+    //           },
+    //         ),
+    //       )
+    //       .toJSON(),
+    //   ];
 
-      if (welcomeChannel.isTextBased()) {
-        await welcomeChannel.send(`Welcome to the server ${member.user}!`);
-      }
+    //   const rest = new REST({ version: '10' }).setToken(discordToken);
 
-      loggerService.debug({
-        message: 'Welcome message sent.',
-        context: {
-          user: member.user.username,
-          channel: welcomeChannelName,
-        },
-      });
-    });
+    //   try {
+    //     console.log('Registering slash commands...');
 
-    discordClient.on('interactionCreate', async (interaction) => {
-      if (!interaction.isChatInputCommand()) {
-        return;
-      }
+    //     await rest.put(Routes.applicationGuildCommands(discordClientId, discordServerId), {
+    //       body: commands,
+    //     });
 
-      loggerService.debug({
-        message: 'Processing chat command...',
-        context: {
-          command: interaction.commandName,
-          user: interaction.user.username,
-        },
-      });
-
-      if (interaction.commandName === 'random') {
-        interaction.reply('#324 Create person bio functionality');
-      }
-    });
-
-    // TODO: add discord service method
-    await discordClient.login(discordToken);
-
-    const commands = [
-      {
-        name: 'random',
-        description: 'Issue #242',
-      },
-    ];
-
-    const rest = new REST({ version: '10' }).setToken(discordToken);
-
-    try {
-      console.log('Registering slash commands...');
-
-      await rest.put(Routes.applicationGuildCommands(discordClientId, discordServerId), {
-        body: commands,
-      });
-
-      console.log('Slash commands were registered successfully!');
-    } catch (error) {
-      console.log(`There was an error: ${error}`);
-    }
+    //     console.log('Slash commands were registered successfully!');
+    //   } catch (error) {
+    //     console.log(`There was an error: ${error}`);
+    //   }
+    // }
   }
 }

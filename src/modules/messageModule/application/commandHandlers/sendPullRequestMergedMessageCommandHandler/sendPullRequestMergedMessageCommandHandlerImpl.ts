@@ -2,17 +2,14 @@ import {
   type SendPullRequestMergedMessageCommandHandler,
   type SendPullRequestMergedMessageCommandHandlerPayload,
 } from './sendPullRequestMergedMessageCommandHandler.js';
-import {
-  type SendEmbedMessagePayload,
-  type DiscordService,
-} from '../../../../../libs/discord/services/discordService/discordService.js';
+import { type SendEmbedMessagePayload, type DiscordClient } from '../../../../../core/discordClient/discordClient.js';
 import { type GithubService } from '../../../../../libs/github/services/githubService/githubService.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type MessageModuleConfigProvider } from '../../../messageModuleConfigProvider.js';
 
 export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullRequestMergedMessageCommandHandler {
   public constructor(
-    private readonly discordService: DiscordService,
+    private readonly discordClient: DiscordClient,
     private readonly loggerService: LoggerService,
     private readonly configProvider: MessageModuleConfigProvider,
     private readonly githubService: GithubService,
@@ -67,7 +64,7 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
       channelId: pullRequestsChannelId,
     };
 
-    await this.discordService.sendEmbedMessage(embedMessageDraft);
+    await this.discordClient.sendEmbedMessage(embedMessageDraft);
 
     this.loggerService.info({
       message: 'Message about merged pull request sent.',

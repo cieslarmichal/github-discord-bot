@@ -2,10 +2,7 @@ import {
   type SendStarCreatedMessageCommandHandler,
   type SendStarCreatedMessageCommandHandlerPayload,
 } from './sendStarCreatedMessageCommandHandler.js';
-import {
-  type SendEmbedMessagePayload,
-  type DiscordService,
-} from '../../../../../libs/discord/services/discordService/discordService.js';
+import { type DiscordClient, type SendEmbedMessagePayload } from '../../../../../core/discordClient/discordClient.js';
 import { type LoggerService } from '../../../../../libs/logger/services/loggerService/loggerService.js';
 import { type MessageModuleConfigProvider } from '../../../messageModuleConfigProvider.js';
 
@@ -13,7 +10,7 @@ export class SendStarCreatedMessageCommandHandlerImpl implements SendStarCreated
   private readonly githubBaseUrl = 'https://github.com';
 
   public constructor(
-    private readonly discordService: DiscordService,
+    private readonly discordClient: DiscordClient,
     private readonly loggerService: LoggerService,
     private readonly configProvider: MessageModuleConfigProvider,
   ) {}
@@ -65,7 +62,7 @@ export class SendStarCreatedMessageCommandHandlerImpl implements SendStarCreated
       channelId: starsChannelId,
     };
 
-    await this.discordService.sendEmbedMessage(embedMessageDraft);
+    await this.discordClient.sendEmbedMessage(embedMessageDraft);
 
     this.loggerService.info({
       message: 'Message about created star sent.',
