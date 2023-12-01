@@ -8,7 +8,7 @@ export class RandomIssueDiscordSlashCommand extends SlashCommand {
     .setName(this.commandName)
     .setDescription('Get random issue.')
     .addStringOption((option) =>
-      option.setName('level').setDescription('The issue level.').setRequired(true).addChoices(
+      option.setName('difficulty').setDescription('The difficulty level.').setRequired(true).addChoices(
         {
           name: 'easy',
           value: 'easy',
