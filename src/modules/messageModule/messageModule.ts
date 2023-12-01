@@ -8,6 +8,8 @@ import { type SendPullRequestMergedMessageCommandHandler } from './application/c
 import { SendPullRequestMergedMessageCommandHandlerImpl } from './application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandlerImpl.js';
 import { type SendStarCreatedMessageCommandHandler } from './application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandler.js';
 import { SendStarCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandlerImpl.js';
+import { type SendWelcomeMessageCommandHandler } from './application/commandHandlers/sendWelcomeMessageCommandHandler/sendWelcomeMessageCommandHandler.js';
+import { SendWelcomeMessageCommandHandlerImpl } from './application/commandHandlers/sendWelcomeMessageCommandHandler/sendWelcomeMessageCommandHandlerImpl.js';
 import { type MessageModuleConfigProvider } from './messageModuleConfigProvider.js';
 import { symbols } from './symbols.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
@@ -79,9 +81,22 @@ export class MessageModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<SendWelcomeMessageCommandHandler>(
+      symbols.sendWelcomeMessageCommandHandler,
+      () =>
+        new SendWelcomeMessageCommandHandlerImpl(
+          container.get<DiscordClient>(coreSymbols.discordClient),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
+        ),
+    );
+
     container.bind<GuildMemberDiscordEventController>(
       symbols.guildMemberDiscordEventController,
-      () => new GuildMemberDiscordEventController(container.get<LoggerService>(coreSymbols.loggerService)),
+      () =>
+        new GuildMemberDiscordEventController(
+          container.get<SendWelcomeMessageCommandHandler>(symbols.sendWelcomeMessageCommandHandler),
+        ),
     );
   }
 }

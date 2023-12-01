@@ -27,7 +27,7 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
         authorName: author.name,
-        pullRequestsChannelId,
+        channelId: pullRequestsChannelId,
         repositoryName,
       },
     });
@@ -73,7 +73,7 @@ export class SendPullRequestMergedMessageCommandHandlerImpl implements SendPullR
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
         authorName: author.name,
-        pullRequestsChannelId,
+        channelId: pullRequestsChannelId,
         repositoryName,
       },
     });

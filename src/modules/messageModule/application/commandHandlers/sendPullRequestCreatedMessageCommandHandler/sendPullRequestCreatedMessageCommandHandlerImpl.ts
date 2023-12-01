@@ -27,7 +27,7 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
         authorName: author.name,
-        pullRequestsChannelId,
+        channelId: pullRequestsChannelId,
       },
     });
 
@@ -74,7 +74,7 @@ export class SendPullRequestCreatedMessageCommandHandlerImpl implements SendPull
         pullRequestTitle: pullRequest.title,
         pullRequestUrl: pullRequest.url,
         authorName: author.name,
-        pullRequestsChannelId,
+        channelId: pullRequestsChannelId,
       },
     });
   }

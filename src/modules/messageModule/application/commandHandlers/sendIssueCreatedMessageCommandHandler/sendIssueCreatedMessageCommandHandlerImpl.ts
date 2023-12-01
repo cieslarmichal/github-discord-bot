@@ -25,7 +25,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
         issueTitle: issue.title,
         issueUrl: issue.url,
         authorName: author.name,
-        issuesChannelId,
+        channelId: issuesChannelId,
       },
     });
 
@@ -70,7 +70,7 @@ export class SendIssueCreatedMessageCommandHandlerImpl implements SendIssueCreat
         issueTitle: issue.title,
         issueUrl: issue.url,
         authorName: author.name,
-        issuesChannelId,
+        channelId: issuesChannelId,
       },
     });
   }

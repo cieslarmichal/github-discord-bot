@@ -27,7 +27,7 @@ export class SendStarCreatedMessageCommandHandlerImpl implements SendStarCreated
         repositoryName: repository.name,
         totalStars: repository.totalStars,
         stargazerName: stargazer.name,
-        starsChannelId,
+        channelId: starsChannelId,
       },
     });
 
@@ -71,7 +71,7 @@ export class SendStarCreatedMessageCommandHandlerImpl implements SendStarCreated
         repositoryName: repository.name,
         totalStars: repository.totalStars,
         stargazerName: stargazer.name,
-        starsChannelId,
+        channelId: starsChannelId,
       },
     });
   }
