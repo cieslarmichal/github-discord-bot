@@ -14,6 +14,8 @@ import { type SendStarCreatedMessageCommandHandler } from './application/command
 import { SendStarCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendStarCreatedMessageCommandHandler/sendStarCreatedMessageCommandHandlerImpl.js';
 import { type SendWelcomeMessageCommandHandler } from './application/commandHandlers/sendWelcomeMessageCommandHandler/sendWelcomeMessageCommandHandler.js';
 import { SendWelcomeMessageCommandHandlerImpl } from './application/commandHandlers/sendWelcomeMessageCommandHandler/sendWelcomeMessageCommandHandlerImpl.js';
+import { type FindRandomUnassignedIssueQueryHandler } from './application/queryHandlers/findRandomUnassignedIssueQueryHandler/findRandomUnassignedIssueQueryHandler.js';
+import { FindRandomUnassignedIssueQueryHandlerImpl } from './application/queryHandlers/findRandomUnassignedIssueQueryHandler/findRandomUnassignedIssueQueryHandlerImpl.js';
 import { type MessageModuleConfigProvider } from './messageModuleConfigProvider.js';
 import { symbols } from './symbols.js';
 import { type ConfigProvider } from '../../core/configProvider.js';
@@ -116,9 +118,22 @@ export class MessageModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<FindRandomUnassignedIssueQueryHandler>(
+      symbols.findRandomUnassignedIssueQueryHandler,
+      () =>
+        new FindRandomUnassignedIssueQueryHandlerImpl(
+          container.get<GithubService>(coreSymbols.githubService),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
+        ),
+    );
+
     container.bind<RandomIssueDiscordSlashCommand>(
       symbols.randomIssueDiscordSlashCommand,
-      () => new RandomIssueDiscordSlashCommand(),
+      () =>
+        new RandomIssueDiscordSlashCommand(
+          container.get<FindRandomUnassignedIssueQueryHandler>(symbols.findRandomUnassignedIssueQueryHandler),
+        ),
     );
   }
 }

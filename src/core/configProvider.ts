@@ -65,4 +65,8 @@ export class ConfigProvider {
   public getDiscordServerId(): string {
     return this.getStringEnvVariable('DISCORD_SERVER_ID');
   }
+
+  public getGithubRepositoryName(): string {
+    return this.getStringEnvVariable('GITHUB_REPOSITORY_NAME');
+  }
 }

@@ -75,7 +75,7 @@ export class DiscordClientImpl implements DiscordClient {
       });
     });
 
-    const commandsBody = slashCommands.map((slashCommand) => slashCommand.slashCommandBuilder.toJSON());
+    const commandsBody = slashCommands.map((slashCommand) => slashCommand.getSlashCommandBuilder().toJSON());
 
     const rest = new REST({ version: '10' }).setToken(token);
 

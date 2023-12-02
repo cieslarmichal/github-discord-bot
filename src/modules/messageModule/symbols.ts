@@ -11,6 +11,7 @@ export const symbols = {
   interactionDiscordEventController: Symbol('interactionDiscordEventController'),
   discordSlashCommandsRegistry: Symbol('discordSlashCommandsRegistry'),
   randomIssueDiscordSlashCommand: Symbol('randomIssueDiscordSlashCommand'),
+  findRandomUnassignedIssueQueryHandler: Symbol('findRandomUnassignedIssueQueryHandler'),
 };
 
 export const messageSymbols = {

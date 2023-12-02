@@ -1,30 +1,71 @@
-import { SlashCommandBuilder, type ChatInputCommandInteraction } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
-import { SlashCommand } from '../../../../../common/types/discord/slashCommand.js';
+import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
+import { DifficultyLevel } from '../../../../../common/types/difficultyLevel.js';
+import { type SlashCommand } from '../../../../../common/types/discord/slashCommand.js';
+import { type SlashCommandHandler } from '../../../../../common/types/discord/slashCommandHandler.js';
+import { type FindRandomUnassignedIssueQueryHandler } from '../../../application/queryHandlers/findRandomUnassignedIssueQueryHandler/findRandomUnassignedIssueQueryHandler.js';
 
-export class RandomIssueDiscordSlashCommand extends SlashCommand {
-  public override commandName = 'random-issue';
-  public override slashCommandBuilder = new SlashCommandBuilder()
-    .setName(this.commandName)
-    .setDescription('Get random issue.')
-    .addStringOption((option) =>
-      option.setName('difficulty').setDescription('The difficulty level.').setRequired(true).addChoices(
-        {
-          name: 'easy',
-          value: 'easy',
-        },
-        {
-          name: 'medium',
-          value: 'medium',
-        },
-        {
-          name: 'hard',
-          value: 'hard',
-        },
-      ),
-    );
+export class RandomIssueDiscordSlashCommand implements SlashCommand {
+  private readonly commandName = 'random-issue';
 
-  public override handler = async (interaction: ChatInputCommandInteraction): Promise<void> => {
-    interaction.reply('#324 Create person bio functionality');
-  };
+  public constructor(private readonly findRandomUnassignedIssueQueryHandler: FindRandomUnassignedIssueQueryHandler) {}
+
+  public getCommandName(): string {
+    return this.commandName;
+  }
+
+  public getSlashCommandBuilder(): Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'> {
+    return new SlashCommandBuilder()
+      .setName(this.commandName)
+      .setDescription('Get random issue by difficulty.')
+      .addStringOption((option) =>
+        option.setName('difficulty').setDescription('The difficulty level.').setRequired(true).addChoices(
+          {
+            name: DifficultyLevel.easy,
+            value: DifficultyLevel.easy,
+          },
+          {
+            name: DifficultyLevel.medium,
+            value: DifficultyLevel.medium,
+          },
+          {
+            name: DifficultyLevel.hard,
+            value: DifficultyLevel.hard,
+          },
+        ),
+      );
+  }
+
+  public getHandler(): SlashCommandHandler {
+    return async (interaction) => {
+      const difficulty = interaction.options.getString('difficulty');
+
+      if (!difficulty) {
+        throw new OperationNotValidError({
+          reason: 'Difficulty level not provided required.',
+        });
+      }
+
+      const { issue } = await this.findRandomUnassignedIssueQueryHandler.execute({
+        difficultyLevel: difficulty as DifficultyLevel,
+      });
+
+      if (!issue) {
+        await interaction.reply('No issue found.');
+
+        return;
+      }
+
+      const embedMessage = new EmbedBuilder()
+        .setTitle(`#${issue.number}: ${issue.title}`)
+        .setURL(issue.url)
+        .setAuthor({
+          name: issue.assignee!.name,
+        })
+        .setThumbnail(issue.assignee!.avatarUrl);
+
+      await interaction.reply({ embeds: [embedMessage] });
+    };
+  }
 }
