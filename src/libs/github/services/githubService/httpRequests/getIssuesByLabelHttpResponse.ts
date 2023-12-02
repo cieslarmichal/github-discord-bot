@@ -10,4 +10,6 @@ export interface IssueBody {
   } | null;
 }
 
-export type GetIssuesByLabelHttpResponseBody = IssueBody[];
+export interface GetIssuesByLabelHttpResponseBody {
+  readonly items: IssueBody[];
+}

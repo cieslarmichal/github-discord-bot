@@ -81,14 +81,14 @@ export class GithubServiceImpl implements GithubService {
       });
     }
 
-    const issues = response.body.map((issueBody) => ({
-      number: issueBody.number,
-      title: issueBody.title,
-      url: issueBody.html_url,
-      assignee: issueBody.assignee
+    const issues = response.body.items.map((issue) => ({
+      number: issue.number,
+      title: issue.title,
+      url: issue.html_url,
+      assignee: issue.assignee
         ? {
-            name: issueBody.assignee.login,
-            avatarUrl: issueBody.assignee.avatar_url,
+            name: issue.assignee.login,
+            avatarUrl: issue.assignee.avatar_url,
           }
         : null,
     }));
