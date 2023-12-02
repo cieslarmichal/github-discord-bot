@@ -58,13 +58,7 @@ export class RandomIssueDiscordSlashCommand implements SlashCommand {
     const embedMessage = new EmbedBuilder()
       .setTitle(`#${issue.number}: ${issue.title}`)
       .setURL(issue.url)
-      .addFields([
-        {
-          name: 'Difficulty:',
-          value: difficulty,
-          inline: true,
-        },
-      ]);
+      .setDescription(`Difficulty: ${difficulty}`);
 
     await interaction.reply({ embeds: [embedMessage] });
   }
