@@ -32,6 +32,7 @@ export class FindRandomUnassignedIssueQueryHandlerImpl implements FindRandomUnas
 
     const issues = await this.githubService.getIssuesByLabel({
       label: difficultyLevel,
+      repositoryName,
     });
 
     const unassignedIssues = issues.filter((issue) => issue.assignee === null);

@@ -65,9 +65,9 @@ export class GithubServiceImpl implements GithubService {
   }
 
   public async getIssuesByLabel(payload: GetIssuesByLabelPayload): Promise<GithubIssue[]> {
-    const { label } = payload;
+    const { repositoryName, label } = payload;
 
-    const issuesSearchUrl = `${this.githubBaseUrl}/search/issues?q=label:${label}`;
+    const issuesSearchUrl = `${this.githubBaseUrl}/search/issues?q=repo:${repositoryName}+label:${label}`;
 
     const response = await this.httpService.sendRequest<GetIssuesByLabelHttpResponseBody>({
       method: HttpMethodName.get,

@@ -12,6 +12,7 @@ export interface GetNumberOfPullRequestsByAuthorPayload {
 }
 
 export interface GetIssuesByLabelPayload {
+  readonly repositoryName: string;
   readonly label: string;
 }
 
