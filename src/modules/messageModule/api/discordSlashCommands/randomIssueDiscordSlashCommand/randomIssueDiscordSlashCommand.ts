@@ -60,8 +60,9 @@ export class RandomIssueDiscordSlashCommand implements SlashCommand {
       .setURL(issue.url)
       .addFields([
         {
-          name: 'Difficulty',
+          name: 'Difficulty:',
           value: difficulty,
+          inline: true,
         },
       ]);
 
