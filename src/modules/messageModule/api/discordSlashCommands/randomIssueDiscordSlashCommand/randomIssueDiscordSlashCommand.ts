@@ -50,7 +50,7 @@ export class RandomIssueDiscordSlashCommand implements SlashCommand {
     });
 
     if (!issue) {
-      await interaction.reply('No issue found.');
+      await interaction.reply(`No issue found with ${difficulty} difficulty level.`);
 
       return;
     }
