@@ -11,7 +11,7 @@ export class DiscordSlashCommandsRegistryImpl implements DiscordSlashCommandsReg
   public registerSlashCommand(payload: RegisterSlashCommandPayload): void {
     const { slashCommand } = payload;
 
-    const slashCommandAlreadyExists = this.getSlashCommand({ commandName: slashCommand.commandName });
+    const slashCommandAlreadyExists = this.getSlashCommand({ commandName: slashCommand.getCommandName() });
 
     if (slashCommandAlreadyExists) {
       return;
@@ -27,6 +27,6 @@ export class DiscordSlashCommandsRegistryImpl implements DiscordSlashCommandsReg
   public getSlashCommand(payload: GetSlashCommandPayload): SlashCommand | undefined {
     const { commandName } = payload;
 
-    return this.slashCommands.find((existingSlashCommand) => existingSlashCommand.commandName === commandName);
+    return this.slashCommands.find((existingSlashCommand) => existingSlashCommand.getCommandName() === commandName);
   }
 }

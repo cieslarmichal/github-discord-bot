@@ -7,7 +7,7 @@ export interface IssueBody {
   assignee: {
     login: string;
     avatar_url: string;
-  };
+  } | null;
 }
 
 export type GetIssuesByLabelHttpResponseBody = IssueBody[];

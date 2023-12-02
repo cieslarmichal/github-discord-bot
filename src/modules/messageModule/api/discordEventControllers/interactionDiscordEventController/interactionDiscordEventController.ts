@@ -32,6 +32,6 @@ export class InteractionDiscordEventController implements DiscordEventController
       return;
     }
 
-    await commandHandler.handler(interaction);
+    await commandHandler.handleInteraction(interaction);
   }
 }

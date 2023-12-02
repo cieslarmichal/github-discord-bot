@@ -1,9 +1,8 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
 import { OperationNotValidError } from '../../../../../common/errors/operationNotValidError.js';
 import { DifficultyLevel } from '../../../../../common/types/difficultyLevel.js';
 import { type SlashCommand } from '../../../../../common/types/discord/slashCommand.js';
-import { type SlashCommandHandler } from '../../../../../common/types/discord/slashCommandHandler.js';
 import { type FindRandomUnassignedIssueQueryHandler } from '../../../application/queryHandlers/findRandomUnassignedIssueQueryHandler/findRandomUnassignedIssueQueryHandler.js';
 
 export class RandomIssueDiscordSlashCommand implements SlashCommand {
@@ -37,35 +36,33 @@ export class RandomIssueDiscordSlashCommand implements SlashCommand {
       );
   }
 
-  public getHandler(): SlashCommandHandler {
-    return async (interaction) => {
-      const difficulty = interaction.options.getString('difficulty');
+  public async handleInteraction(interaction: ChatInputCommandInteraction): Promise<void> {
+    const difficulty = interaction.options.getString('difficulty');
 
-      if (!difficulty) {
-        throw new OperationNotValidError({
-          reason: 'Difficulty level not provided required.',
-        });
-      }
-
-      const { issue } = await this.findRandomUnassignedIssueQueryHandler.execute({
-        difficultyLevel: difficulty as DifficultyLevel,
+    if (!difficulty) {
+      throw new OperationNotValidError({
+        reason: 'Difficulty level not provided required.',
       });
+    }
 
-      if (!issue) {
-        await interaction.reply('No issue found.');
+    const { issue } = await this.findRandomUnassignedIssueQueryHandler.execute({
+      difficultyLevel: difficulty as DifficultyLevel,
+    });
 
-        return;
-      }
+    if (!issue) {
+      await interaction.reply('No issue found.');
 
-      const embedMessage = new EmbedBuilder()
-        .setTitle(`#${issue.number}: ${issue.title}`)
-        .setURL(issue.url)
-        .setAuthor({
-          name: issue.assignee!.name,
-        })
-        .setThumbnail(issue.assignee!.avatarUrl);
+      return;
+    }
 
-      await interaction.reply({ embeds: [embedMessage] });
-    };
+    const embedMessage = new EmbedBuilder()
+      .setTitle(`#${issue.number}: ${issue.title}`)
+      .setURL(issue.url)
+      .setAuthor({
+        name: issue.assignee!.name,
+      })
+      .setThumbnail(issue.assignee!.avatarUrl);
+
+    await interaction.reply({ embeds: [embedMessage] });
   }
 }
