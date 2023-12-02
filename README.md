@@ -2,10 +2,9 @@
 
 ### 💎 Features
 
-- Welcomes newcomers
-- Notifies about created github issues
-- Notifies about created github pull request
-- Notifies about merged github pull request (counts author contributions)
-- Notifies about created github stars
-- Notifies about created github forks
-- Getting random issue based on difficulty level
+- [Welcomes newcomers](https://github.com/cieslarmichal/faker-cxx/resources/welcome.png)
+- [Notifies about created github issues](https://github.com/cieslarmichal/faker-cxx/resources/issue.png)
+- [Notifies about created/merged github pull request](https://github.com/cieslarmichal/faker-cxx/resources/pull-requests.png)
+- [Notifies about created github star](https://github.com/cieslarmichal/faker-cxx/resources/stargazer.png)
+- [Notifies about created github forks](https://github.com/cieslarmichal/faker-cxx/resources/stargazer.png)
+- [Getting random issue based on difficulty level](https://github.com/cieslarmichal/faker-cxx/resources/random-issue.png)
