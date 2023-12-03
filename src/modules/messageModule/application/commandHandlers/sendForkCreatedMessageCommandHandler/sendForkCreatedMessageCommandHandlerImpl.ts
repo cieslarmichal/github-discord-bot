@@ -35,7 +35,7 @@ export class SendForkCreatedMessageCommandHandlerImpl implements SendForkCreated
 
     const messageUrl = `${this.githubBaseUrl}/${repository.name}/forks`;
 
-    const messageDescription = `${forkOwner.name} forked a repository :rocket:`;
+    const messageDescription = `${forkOwner.name} forked a repository`;
 
     const customFields = [
       {
