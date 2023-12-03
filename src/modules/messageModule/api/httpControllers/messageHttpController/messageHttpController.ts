@@ -224,21 +224,19 @@ export class MessageHttpController implements HttpController {
   private async processGithubForkEvent(
     request: HttpRequest<ProcessGithubForkEventBody>,
   ): Promise<HttpOkResponse<ProcessGithubForkEventResponseOkBody>> {
-    const { action, repository, forkee } = request.body;
+    const { repository, forkee } = request.body;
 
-    if (action === 'created') {
-      await this.sendForkCreatedMessageCommandHandler.execute({
-        forkOwner: {
-          name: forkee.owner.login,
-          profileUrl: forkee.owner.html_url,
-          avatarUrl: forkee.owner.avatar_url,
-        },
-        repository: {
-          totalForks: repository.forks_count,
-          name: repository.full_name,
-        },
-      });
-    }
+    await this.sendForkCreatedMessageCommandHandler.execute({
+      forkOwner: {
+        name: forkee.owner.login,
+        profileUrl: forkee.owner.html_url,
+        avatarUrl: forkee.owner.avatar_url,
+      },
+      repository: {
+        totalForks: repository.forks_count,
+        name: repository.full_name,
+      },
+    });
 
     return {
       statusCode: HttpStatusCode.ok,
