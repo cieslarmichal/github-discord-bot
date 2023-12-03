@@ -4,6 +4,7 @@ export const symbols = {
   sendPullRequestCreatedMessageCommandHandler: Symbol('sendPullRequestCreatedMessageCommandHandler'),
   sendPullRequestMergedMessageCommandHandler: Symbol('sendPullRequestMergedMessageCommandHandler'),
   sendStarCreatedMessageCommandHandler: Symbol('sendStarCreatedMessageCommandHandler'),
+  sendForkCreatedMessageCommandHandler: Symbol('sendForkCreatedMessageCommandHandler'),
   sendWelcomeMessageCommandHandler: Symbol('sendWelcomeMessageCommandHandler'),
   githubService: Symbol('githubService'),
   messageHttpController: Symbol('messageHttpController'),

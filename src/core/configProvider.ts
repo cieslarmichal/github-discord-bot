@@ -58,6 +58,10 @@ export class ConfigProvider {
     return this.getStringEnvVariable('DISCORD_STARS_CHANNEL_ID');
   }
 
+  public getDiscordForksChannelId(): string {
+    return this.getStringEnvVariable('DISCORD_FORKS_CHANNEL_ID');
+  }
+
   public getDiscordClientId(): string {
     return this.getStringEnvVariable('DISCORD_CLIENT_ID');
   }

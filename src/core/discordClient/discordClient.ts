@@ -11,7 +11,7 @@ export interface SendTextMessagePayload {
 
 export interface SendEmbedMessagePayload {
   readonly message: {
-    readonly color: string;
+    readonly color?: string;
     readonly title: string;
     readonly url: string;
     readonly author: {

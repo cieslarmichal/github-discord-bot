@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 
 import {
+  type ProcessGithubForkEventBody,
+  type ProcessGithubForkEventResponseOkBody,
+  processGithubForkEventBodySchema,
+  processGithubForkEventResponseOkBodySchema,
+} from './schemas/processGithubForkEventSchema.js';
+import {
   processGithubIssueEventBodySchema,
   processGithubIssueEventResponseOkBodySchema,
   type ProcessGithubIssueEventBody,
@@ -24,6 +30,7 @@ import { type HttpRequest } from '../../../../../common/types/http/httpRequest.j
 import { type HttpOkResponse } from '../../../../../common/types/http/httpResponse.js';
 import { HttpRoute } from '../../../../../common/types/http/httpRoute.js';
 import { HttpStatusCode } from '../../../../../common/types/http/httpStatusCode.js';
+import { type SendForkCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendForkCreatedMessageCommandHandler/sendForkCreatedMessageCommandHandler.js';
 import { type SendIssueCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { type SendPullRequestCreatedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendPullRequestCreatedMessageCommandHandler.js';
 import { type SendPullRequestMergedMessageCommandHandler } from '../../../application/commandHandlers/sendPullRequestMergedMessageCommandHandler/sendPullRequestMergedMessageCommandHandler.js';
@@ -37,6 +44,7 @@ export class MessageHttpController implements HttpController {
     private readonly sendPullRequestCreatedMessageCommandHandler: SendPullRequestCreatedMessageCommandHandler,
     private readonly sendPullRequestMergedMessageCommandHandler: SendPullRequestMergedMessageCommandHandler,
     private readonly sendStarCreatedMessageCommandHandler: SendStarCreatedMessageCommandHandler,
+    private readonly sendForkCreatedMessageCommandHandler: SendForkCreatedMessageCommandHandler,
   ) {}
 
   public getHttpRoutes(): HttpRoute[] {
@@ -94,6 +102,24 @@ export class MessageHttpController implements HttpController {
         },
         tags: ['Star', 'Github', 'Webhook'],
         description: 'Process github star event.',
+      }),
+      new HttpRoute({
+        method: HttpMethodName.post,
+        path: '/forks',
+        handler: this.processGithubForkEvent.bind(this),
+        schema: {
+          request: {
+            body: processGithubForkEventBodySchema,
+          },
+          response: {
+            [HttpStatusCode.ok]: {
+              schema: processGithubForkEventResponseOkBodySchema,
+              description: 'Fork event processed.',
+            },
+          },
+        },
+        tags: ['Fork', 'Github', 'Webhook'],
+        description: 'Process github fork event.',
       }),
     ];
   }
@@ -185,6 +211,31 @@ export class MessageHttpController implements HttpController {
         repository: {
           name: repository.full_name,
           totalStars: repository.stargazers_count,
+        },
+      });
+    }
+
+    return {
+      statusCode: HttpStatusCode.ok,
+      body: null,
+    };
+  }
+
+  private async processGithubForkEvent(
+    request: HttpRequest<ProcessGithubForkEventBody>,
+  ): Promise<HttpOkResponse<ProcessGithubForkEventResponseOkBody>> {
+    const { action, repository, forkee } = request.body;
+
+    if (action === 'created') {
+      await this.sendForkCreatedMessageCommandHandler.execute({
+        forkOwner: {
+          name: forkee.owner.login,
+          profileUrl: forkee.owner.html_url,
+          avatarUrl: forkee.owner.avatar_url,
+        },
+        repository: {
+          totalForks: repository.forks_count,
+          name: repository.full_name,
         },
       });
     }

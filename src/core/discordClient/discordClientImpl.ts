@@ -129,7 +129,6 @@ export class DiscordClientImpl implements DiscordClient {
     }
 
     const embedMessage = new EmbedBuilder()
-      .setColor(message.color as HexColorString)
       .setTitle(message.title)
       .setURL(message.url)
       .setAuthor({
@@ -137,6 +136,10 @@ export class DiscordClientImpl implements DiscordClient {
         url: message.author.url,
       })
       .setThumbnail(message.thumbnail);
+
+    if (message.color) {
+      embedMessage.setColor(message.color as HexColorString);
+    }
 
     if (message.description) {
       embedMessage.setDescription(message.description);

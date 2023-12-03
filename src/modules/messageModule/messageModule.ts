@@ -4,6 +4,8 @@ import { RandomIssueDiscordSlashCommand } from './api/discordSlashCommands/rando
 import { type DiscordSlashCommandsRegistry } from './api/discordSlashCommandsRegistry/discordSlashCommandsRegistry.js';
 import { DiscordSlashCommandsRegistryImpl } from './api/discordSlashCommandsRegistry/discordSlashCommandsRegistryImpl.js';
 import { MessageHttpController } from './api/httpControllers/messageHttpController/messageHttpController.js';
+import { type SendForkCreatedMessageCommandHandler } from './application/commandHandlers/sendForkCreatedMessageCommandHandler/sendForkCreatedMessageCommandHandler.js';
+import { SendForkCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendForkCreatedMessageCommandHandler/sendForkCreatedMessageCommandHandlerImpl.js';
 import { type SendIssueCreatedMessageCommandHandler } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandler.js';
 import { SendIssueCreatedMessageCommandHandlerImpl } from './application/commandHandlers/sendIssueCreatedMessageCommandHandler/sendIssueCreatedMessageCommandHandlerImpl.js';
 import { type SendPullRequestCreatedMessageCommandHandler } from './application/commandHandlers/sendPullRequestCreatedMessageCommandHandler/sendPullRequestCreatedMessageCommandHandler.js';
@@ -74,6 +76,16 @@ export class MessageModule implements DependencyInjectionModule {
         ),
     );
 
+    container.bind<SendForkCreatedMessageCommandHandler>(
+      symbols.sendForkCreatedMessageCommandHandler,
+      () =>
+        new SendForkCreatedMessageCommandHandlerImpl(
+          container.get<DiscordClient>(coreSymbols.discordClient),
+          container.get<LoggerService>(coreSymbols.loggerService),
+          container.get<MessageModuleConfigProvider>(symbols.messageModuleConfigProvider),
+        ),
+    );
+
     container.bind<MessageHttpController>(
       symbols.messageHttpController,
       () =>
@@ -84,6 +96,7 @@ export class MessageModule implements DependencyInjectionModule {
           ),
           container.get<SendPullRequestMergedMessageCommandHandler>(symbols.sendPullRequestMergedMessageCommandHandler),
           container.get<SendStarCreatedMessageCommandHandler>(symbols.sendStarCreatedMessageCommandHandler),
+          container.get<SendForkCreatedMessageCommandHandler>(symbols.sendForkCreatedMessageCommandHandler),
         ),
     );
 
