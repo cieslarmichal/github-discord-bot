@@ -22,7 +22,7 @@ export class FindRandomUnassignedIssueQueryHandlerImpl implements FindRandomUnas
     const repositoryName = this.configProvider.getGithubRepositoryName();
 
     this.loggerService.debug({
-      message: 'Fetching random unassigned issue...',
+      message: 'Fetching random unassigned open issue...',
       context: {
         source: FindRandomUnassignedIssueQueryHandlerImpl.name,
         repositoryName,
@@ -37,13 +37,15 @@ export class FindRandomUnassignedIssueQueryHandlerImpl implements FindRandomUnas
 
     const unassignedIssues = issues.filter((issue) => issue.assignee === null);
 
-    const randomIndex = Math.floor(Math.random() * unassignedIssues.length);
+    const unassignedOpenIssues = unassignedIssues.filter((issue) => issue.state === 'open');
 
-    const issue = unassignedIssues[randomIndex];
+    const randomIndex = Math.floor(Math.random() * unassignedOpenIssues.length);
+
+    const issue = unassignedOpenIssues[randomIndex];
 
     if (!issue) {
       this.loggerService.info({
-        message: 'No random unassigned issue found.',
+        message: 'No random unassigned open issue found.',
         context: {
           source: FindRandomUnassignedIssueQueryHandlerImpl.name,
           repositoryName,
@@ -57,7 +59,7 @@ export class FindRandomUnassignedIssueQueryHandlerImpl implements FindRandomUnas
     }
 
     this.loggerService.info({
-      message: 'Random unassigned issue fetched.',
+      message: 'Random unassigned open issue fetched.',
       context: {
         source: FindRandomUnassignedIssueQueryHandlerImpl.name,
         issueTitle: issue.title,

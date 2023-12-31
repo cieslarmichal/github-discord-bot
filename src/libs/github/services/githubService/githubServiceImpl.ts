@@ -85,6 +85,7 @@ export class GithubServiceImpl implements GithubService {
       number: issue.number,
       title: issue.title,
       url: issue.html_url,
+      state: issue.state,
       assignee: issue.assignee
         ? {
             name: issue.assignee.login,

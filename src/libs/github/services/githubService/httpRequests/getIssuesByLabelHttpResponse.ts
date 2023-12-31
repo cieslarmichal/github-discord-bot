@@ -4,6 +4,7 @@ export interface IssueBody {
   number: number;
   title: string;
   html_url: string;
+  state: string;
   assignee: {
     login: string;
     avatar_url: string;

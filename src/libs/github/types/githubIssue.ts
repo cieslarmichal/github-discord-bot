@@ -5,4 +5,5 @@ export interface GithubIssue {
   readonly number: number;
   readonly url: string;
   readonly assignee: GithubUser | null;
+  readonly state: string;
 }
